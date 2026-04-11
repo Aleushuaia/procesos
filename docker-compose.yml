@@ -1,0 +1,38 @@
+
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: procesos_app
+    volumes:
+      - ./src:/var/www/html
+      - vendor:/var/www/html/vendor
+      - node_modules:/var/www/html/node_modules
+    working_dir: /var/www/html
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1
+
+  db:
+    build:
+      context: ./docker/postgres
+    # previously used image: postgres:latest
+    container_name: procesos_db
+    environment:
+      TZ: "America/Argentina/Buenos_Aires"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "laravel"
+      POSTGRES_USER: "laravel"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/database:/var/lib/postgresql
+
+# using bind-mount for postgres data to ./docker/database to persist DB files
+volumes:
+  vendor:
+  node_modules:

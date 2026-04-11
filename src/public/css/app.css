@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Toggle Switch – Dark / Light mode
+   ========================================================================== */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    transition: background-color 0.35s;
+    border-radius: 26px;
+}
+
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #fff;
+    transition: transform 0.35s;
+    border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+    background-color: #4a6fa5;
+}
+
+.switch input:focus-visible + .slider {
+    outline: 2px solid #4a6fa5;
+    outline-offset: 2px;
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(24px);
+}
+
+/* ==========================================================================
+   Iconos del toggle
+   ========================================================================== */
+.theme-icon-light {
+    color: #f39c12;
+    font-size: .9rem;
+}
+
+.theme-icon-dark {
+    color: #6c757d;
+    font-size: .9rem;
+}
+
+.dark-mode .theme-icon-dark {
+    color: #a8c4ff;
+}
+
+/* ==========================================================================
+   Dark mode – ajustes adicionales
+   ========================================================================== */
+.dark-mode .main-header.navbar {
+    background-color: #343a40 !important;
+    border-bottom-color: #4b545c;
+}
+
+.dark-mode .main-header.navbar .nav-link {
+    color: #c2c7d0 !important;
+}
+
+.dark-mode .brand-link {
+    border-bottom-color: #4b545c;
+}
+
+/* ==========================================================================
+   Utilidades generales
+   ========================================================================== */
+.gap-2 {
+    gap: .5rem;
+}
