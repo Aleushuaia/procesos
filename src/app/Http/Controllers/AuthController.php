@@ -20,6 +20,28 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        // Allow bypassing password in local/dev for convenience via env or default
+        $bypass = env('LOGIN_NO_PASSWORD', true);
+
+        if ($bypass) {
+            $data = $request->validate([
+                'email' => 'required|email',
+            ], [
+                'email.required' => 'El email es requerido',
+                'email.email' => 'El email debe ser válido',
+            ]);
+
+            $user = \App\Models\User::where('email', $data['email'])->first();
+
+            if ($user) {
+                Auth::login($user, $request->filled('remember'));
+                $request->session()->regenerate();
+                return redirect()->intended('/')->with('success', '¡Bienvenido! (bypass)');
+            }
+
+            return back()->withInput($request->only('email'))->withErrors(['auth' => 'Usuario no encontrado.']);
+        }
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6',

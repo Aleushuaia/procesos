@@ -31,6 +31,11 @@ Route::middleware('auth')->group(function () {
             Route::post('access-control/role', [AccessControlController::class, 'createRole'])->name('access-control.create-role');
             Route::delete('access-control/role/{role}', [AccessControlController::class, 'deleteRole'])->name('access-control.delete-role');
         });
+
+        // Gestión interna - Personas CRUD
+        Route::prefix('internal')->name('internal.')->group(function () {
+            Route::resource('personas', App\Http\Controllers\PersonaController::class);
+        });
     });
 });
 

@@ -215,19 +215,23 @@
                         @enderror
                     </div>
                     
-                    {{-- Password --}}
-                    <div class="form-group">
-                        <label for="password">Contraseña</label>
-                        <input type="password" 
-                               id="password" 
-                               name="password" 
-                               class="form-control @error('password') is-invalid @enderror"
-                               placeholder="••••••••"
-                               required>
-                        @error('password')
-                            <span class="error-text">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    {{-- Password (bypassed in this environment) --}}
+                    @if(! env('LOGIN_NO_PASSWORD', true))
+                        <div class="form-group">
+                            <label for="password">Contraseña</label>
+                            <input type="password" 
+                                   id="password" 
+                                   name="password" 
+                                   class="form-control @error('password') is-invalid @enderror"
+                                   placeholder="••••••••"
+                                   required>
+                            @error('password')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @else
+                        <div class="alert alert-info small">Autenticación en modo desarrollo: sólo ingresa el email para iniciar sesión.</div>
+                    @endif
                     
                     {{-- Remember Me --}}
                     <div class="form-check">
@@ -248,18 +252,24 @@
                     </button>
                 </form>
                 
-                {{-- Test Credentials --}}
+                {{-- Test Credentials (dynamic from seeder) --}}
+                @php
+                    $adminUser = \App\Models\User::role('administrador')->first();
+                    $agentUser = \App\Models\User::role('agente')->first();
+                    $testPassword = env('TEST_USER_PASSWORD', 'password');
+                @endphp
+
                 <div class="credentials-hint">
                     <h5><i class="fas fa-info-circle mr-2"></i>Credenciales de Prueba</h5>
                     <p><strong>Administrador:</strong></p>
-                    <p>Email: <code>admin@procesos.local</code></p>
-                    <p>Contraseña: <code>password123</code></p>
-                    
+                    <p>Email: <code>{{ $adminUser ? $adminUser->email : 'admin@prueba.local' }}</code></p>
+                    <p>Contraseña: <code>{{ $testPassword }}</code></p>
+
                     <hr class="my-2">
-                    
+
                     <p><strong>Agente:</strong></p>
-                    <p>Email: <code>agente@procesos.local</code></p>
-                    <p>Contraseña: <code>password123</code></p>
+                    <p>Email: <code>{{ $agentUser ? $agentUser->email : 'agente@prueba.local' }}</code></p>
+                    <p>Contraseña: <code>{{ $testPassword }}</code></p>
                 </div>
             </div>
         </div>

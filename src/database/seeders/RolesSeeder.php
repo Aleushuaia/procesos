@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class RolesSeeder extends Seeder
 {
@@ -47,5 +49,24 @@ class RolesSeeder extends Seeder
                 'role_id' => $agent->id,
             ]);
         }
+
+        // Crear usuarios de prueba y asignar roles
+        $adminUser = User::firstOrCreate(
+            ['email' => 'admin@prueba.local'],
+            [
+                'name' => 'Usuario Administrador',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $adminUser->assignRole($admin->name);
+
+        $agentUser = User::firstOrCreate(
+            ['email' => 'agente@prueba.local'],
+            [
+                'name' => 'Usuario Agente',
+                'password' => Hash::make('password'),
+            ]
+        );
+        $agentUser->assignRole($agent->name);
     }
 }

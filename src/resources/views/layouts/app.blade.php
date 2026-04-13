@@ -112,8 +112,82 @@
                     </li>
 
                     {{-- Sección visible solo para administradores --}}
-                    @if(auth()->check() && auth()->user()->hasRole('administrador'))
-                        <li class="nav-header mt-2">AJUSTES</li>
+                    @if(auth()->check() && auth()->user()->hasAnyRole(['Administrador','administrador','admin']))
+                        <li class="nav-header mt-2">CONFIGURACIONES</li>
+                        
+                        <li class="nav-item has-treeview {{ request()->is('internal/*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ request()->is('internal/*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>
+                                    Configuraciones
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.criticidades.index') }}" class="nav-link {{ request()->is('internal/criticidades*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Criticidades</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.procesos.index') }}" class="nav-link {{ request()->is('internal/procesos*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Procesos</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.estados.index') }}" class="nav-link {{ request()->is('internal/estados*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Estados</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.personas.index') }}" class="nav-link {{ request()->is('internal/personas*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Personas</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.roles.index') }}" class="nav-link {{ request()->is('internal/roles*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Roles</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.proceso-unidad-responsable.index') }}" class="nav-link {{ request()->is('internal/proceso-unidad-responsable*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Proceso Unidad Responsable</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.tipos-actores.index') }}" class="nav-link {{ request()->is('internal/tipos-actores*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Tipos Actores</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.tipo-flujos.index') }}" class="nav-link {{ request()->is('internal/tipo-flujos*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Tipos Flujos</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.tipos-procesos.index') }}" class="nav-link {{ request()->is('internal/tipos-procesos*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Tipos Procesos</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('internal.unidades-responsables.index') }}" class="nav-link {{ request()->is('internal/unidades-responsables*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Unidades Responsables</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-header mt-3">AJUSTES</li>
                         
                         <li class="nav-item">
                             <a href="{{ route('settings.access-control.index') }}" class="nav-link {{ request()->is('settings/access-control*') ? 'active' : '' }}">
@@ -121,9 +195,14 @@
                                 <p>Gestión de acceso</p>
                             </a>
                         </li>
-                    @endif
 
-                    {{-- Agregar más ítems aquí --}}
+                        <li class="nav-item">
+                            <a href="{{ url(config('telescope.path', 'telescope')) }}" class="nav-link {{ request()->is(trim(config('telescope.path', 'telescope'), '/') . '*') ? 'active' : '' }}" target="_blank" rel="noopener">
+                                <i class="nav-icon fas fa-file-alt"></i>
+                                <p>Logs Telescope</p>
+                            </a>
+                        </li>
+                    @endif
 
                 </ul>
             </nav>
