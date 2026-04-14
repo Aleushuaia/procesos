@@ -32,9 +32,17 @@ Route::middleware('auth')->group(function () {
             Route::delete('access-control/role/{role}', [AccessControlController::class, 'deleteRole'])->name('access-control.delete-role');
         });
 
-        // Gestión interna - Personas CRUD
+        // Gestión interna - CRUD de entidades
         Route::prefix('internal')->name('internal.')->group(function () {
+            Route::resource('criticidades', App\Http\Controllers\CriticidadController::class);
+            // 'procesos' resource removed (obsolete)
+            Route::resource('estados', App\Http\Controllers\EstadoController::class);
             Route::resource('personas', App\Http\Controllers\PersonaController::class);
+            // 'roles' and 'proceso-unidad-responsable' resources removed (obsolete)
+            Route::resource('tipos-actores', App\Http\Controllers\TiposActoresController::class);
+            Route::resource('tipo-flujos', App\Http\Controllers\TipoFlujoController::class);
+            Route::resource('tipos-procesos', App\Http\Controllers\TipoProcesoController::class);
+            Route::resource('unidades-responsables', App\Http\Controllers\UnidadResponsableController::class);
         });
     });
 });

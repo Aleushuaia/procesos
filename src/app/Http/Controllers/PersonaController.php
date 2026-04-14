@@ -20,15 +20,15 @@ class PersonaController extends Controller
         $personas = Persona::query()
             ->when($q, fn($b) => $b->where('apellido', 'ilike', "%{$q}%")->orWhere('nombres', 'ilike', "%{$q}%"))
             ->orderBy('apellido')
-            ->paginate(15);
+            ->get();
 
-        return view('personas.index', compact('personas','q'));
+        return view('internal.personas.index', compact('personas','q'));
     }
 
     public function create()
     {
         $tipos = TipoActor::orderBy('descripcion')->get();
-        return view('personas.create', compact('tipos'));
+        return view('internal.personas.create', compact('tipos'));
     }
 
     public function store(Request $request)
@@ -51,14 +51,14 @@ class PersonaController extends Controller
             $persona->tiposActores()->sync($data['tipos_actores']);
         }
 
-        return redirect()->route('personas.index')->with('success','Persona creada correctamente.');
+        return redirect()->route('internal.personas.index')->with('success','Persona creada correctamente.');
     }
 
     public function edit(Persona $persona)
     {
         $tipos = TipoActor::orderBy('descripcion')->get();
         $selected = $persona->tiposActores()->pluck('id')->toArray();
-        return view('personas.edit', compact('persona','tipos','selected'));
+        return view('internal.personas.edit', compact('persona','tipos','selected'));
     }
 
     public function update(Request $request, Persona $persona)
@@ -78,18 +78,18 @@ class PersonaController extends Controller
 
         $persona->tiposActores()->sync($data['tipos_actores'] ?? []);
 
-        return redirect()->route('personas.index')->with('success','Persona actualizada.');
+        return redirect()->route('internal.personas.index')->with('success','Persona actualizada.');
     }
 
     public function destroy(Persona $persona)
     {
         $persona->delete();
-        return redirect()->route('personas.index')->with('success','Persona eliminada.');
+        return redirect()->route('internal.personas.index')->with('success','Persona eliminada.');
     }
 
     public function show(Persona $persona)
     {
         $persona->load('tiposActores');
-        return view('personas.show', compact('persona'));
+        return view('internal.personas.show', compact('persona'));
     }
 }
