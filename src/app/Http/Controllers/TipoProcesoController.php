@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class TipoProcesoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'role:Administrador|administrador|admin']);
+    }
+
     public function index()
     {
         $tipoProcesos = TipoProceso::orderBy('descripcion')->get();

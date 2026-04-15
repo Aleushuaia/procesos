@@ -16,7 +16,7 @@ class AccessControlController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('role:administrador');
+        $this->middleware('role:Administrador|administrador|admin');
     }
 
     /**

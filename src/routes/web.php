@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     
     // Rutas protegidas - Solo para administradores
-    Route::middleware('role:administrador')->group(function () {
+    Route::middleware('role:Administrador|administrador|admin')->group(function () {
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::get('access-control', [AccessControlController::class, 'index'])->name('access-control.index');
             

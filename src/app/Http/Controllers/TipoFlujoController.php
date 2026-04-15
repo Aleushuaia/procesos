@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class TipoFlujoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'role:Administrador|administrador|admin']);
+    }
+
     public function index()
     {
         $tipoFlujos = TipoFlujo::orderBy('descripcion')->get();
