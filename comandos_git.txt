@@ -1,0 +1,84 @@
+# Comandos Git principales
+
+# Configuración
+git config --global user.name "Tu Nombre"      # Setear nombre de usuario
+git config --global user.email "tu@correo.com" # Setear email
+
+# Inicializar / clonar
+git init                                         # Inicializar repo en el directorio actual
+git clone <url>                                  # Clonar repo remoto
+
+# Estado y cambios
+git status                                       # Ver estado de archivos
+git add <file>                                   # Añadir archivo al staging
+git add .                                        # Añadir todos los cambios
+git diff                                          # Ver diferencias sin stage
+git diff --staged                                 # Ver diferencias staged
+
+# Commits
+git commit -m "Mensaje"                         # Crear commit con mensaje
+git commit --amend -m "Nuevo mensaje"           # Modificar último commit
+
+# Historial
+git log                                          # Ver historial de commits
+git log --oneline --graph --decorate             # Resumen compacto
+git show <commit>                                # Mostrar un commit
+
+# Ramas
+git branch                                       # Listar ramas locales
+git branch <nombre>                              # Crear rama local
+git switch <rama>                                # Cambiar a rama (alternativa a checkout)
+git checkout -b <rama>                           # Crear y cambiar a rama
+
+# Fusionar / rebase
+git merge <rama>                                 # Fusionar rama en la actual
+git rebase <rama>                                # Reaplicar commits sobre otra rama
+
+# Sincronización con remoto
+git remote -v                                    # Ver remotos configurados
+git fetch                                        # Traer referencias del remoto
+git pull                                         # Fetch + merge (o pull --rebase)
+git push                                         # Enviar commits al remoto
+git push -u origin <rama>                        # Empujar y establecer upstream
+
+# Reset / revert
+git reset --soft <commit>                        # Mover HEAD, conservar cambios en staging
+git reset --mixed <commit>                       # (por defecto) conservar en working tree
+git reset --hard <commit>                        # Reset total (pierde cambios)
+git revert <commit>                              # Crear commit que deshace otro commit
+
+# Stash
+git stash                                        # Guardar cambios sin commitear
+git stash list                                   # Listar stashes
+git stash pop                                    # Aplicar y borrar último stash
+
+# Tags
+git tag                                          # Listar tags
+git tag -a v1.0 -m "Version 1.0"               # Crear tag anotado
+git push --tags                                  # Enviar tags al remoto
+
+# Búsqueda y depuración
+git grep "texto"                                # Buscar texto en el repo
+git blame <file>                                 # Ver responsable por línea
+git bisect start                                  # Depuración binaria de commits
+
+# Submódulos
+git submodule add <url> <path>                   # Añadir submódulo
+
+# Limpieza
+git clean -fd                                    # Eliminar archivos no versionados (dangerous)
+
+# Recuperación
+git reflog                                       # Historial de movimientos de HEAD (útil para recuperar)
+
+# Config avanzada
+git remote add origin <url>                      # Añadir remoto
+
+# Ejemplos rápidos
+# Crear rama, trabajar, commitear, push y abrir PR (flujo típico):
+# git checkout -b feature/mi-feature
+# git add .
+# git commit -m "Agrega mi feature"
+# git push -u origin feature/mi-feature
+
+# Fin

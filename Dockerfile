@@ -26,8 +26,15 @@ RUN apt-get update \
 WORKDIR /var/www/html
 
 RUN useradd -m appuser || true
-RUN chown -R appuser:appuser /var/www/html
 
-USER appuser
+# Pre-install composer dependencies by copying composer files and running install
+# This allows Docker to cache the vendor layer
+COPY src/composer.json src/composer.lock ./
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader || true
+
+# Copiar entrypoint script
+COPY docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

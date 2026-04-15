@@ -19,18 +19,19 @@ class DatabaseSeeder extends Seeder
         // First, create permissions and roles
         $this->call([
             PermissionsSeeder::class,
+            RolesSeeder::class,
             ProcessConfigSeeder::class,
         ]);
 
-        // Then create test users
+        // Then create test users with roles assigned
         $admin = User::factory()->create([
             'name' => 'Administrador',
             'email' => 'admin@procesos.local',
             'password' => bcrypt('password123'),
         ]);
         
-        // Roles management removed; create users without assigning roles here
-        // (role assignment was handled by RolesSeeder, which has been removed)
+        // Assign Administrador role to admin user
+        $admin->assignRole('Administrador');
         
         $agent = User::factory()->create([
             'name' => 'Agente',
@@ -38,6 +39,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password123'),
         ]);
         
-        // role assignment removed
+        // Assign Agente role to agent user
+        $agent->assignRole('Agente');
     }
 }

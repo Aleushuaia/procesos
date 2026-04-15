@@ -254,8 +254,8 @@
                 
                 {{-- Test Credentials (dynamic from seeder) --}}
                 @php
-                    $adminUser = \App\Models\User::role('administrador')->first();
-                    $agentUser = \App\Models\User::role('agente')->first();
+                    $adminUser = \App\Models\User::role('Administrador')->first();
+                    $agentUser = \App\Models\User::role('Agente')->first();
                     $testPassword = env('TEST_USER_PASSWORD', 'password');
                 @endphp
 

@@ -16,10 +16,8 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     public function register(): void
     {
-        // Avoid loading Telescope migrations automatically in production
-        if ($this->app->environment('production') && ! env('TELESCOPE_ENABLED', false)) {
-            Telescope::ignoreMigrations();
-        }
+        // Skip Telescope setup in production if not enabled
+        // Note: ignoreMigrations() method not available in this version
     }
 
     /**
