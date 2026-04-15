@@ -19,8 +19,8 @@ class TiposFlujosProcesosSeeder extends Seeder
         ];
 
         foreach ($items as $descripcion) {
-            if (! DB::table('tipos_flujos_procesos')->where('descripcion', $descripcion)->exists()) {
-                DB::table('tipos_flujos_procesos')->insert([
+            if (! DB::table('tipos_flujos')->where('descripcion', $descripcion)->exists()) {
+                DB::table('tipos_flujos')->insert([
                     'id' => (string) Str::uuid(),
                     'descripcion' => $descripcion,
                     'created_at' => now(),

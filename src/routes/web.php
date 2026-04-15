@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
 
         // Gestión interna - CRUD de entidades
         Route::prefix('internal')->name('internal.')->group(function () {
+            Route::resource('procesos', App\Http\Controllers\ProcesoController::class);
             Route::resource('criticidades', App\Http\Controllers\CriticidadController::class);
             // 'procesos' resource removed (obsolete)
             Route::resource('estados', App\Http\Controllers\EstadoController::class);

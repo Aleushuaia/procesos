@@ -111,6 +111,16 @@
                         </a>
                     </li>
 
+                    {{-- Procesos - Visible para administradores --}}
+                    @if(auth()->check() && auth()->user()->hasAnyRole(['Administrador','administrador','admin']))
+                        <li class="nav-item">
+                            <a href="{{ route('internal.procesos.index') }}" class="nav-link {{ request()->is('internal/procesos*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-sitemap text-primary"></i>
+                                <p>Procesos</p>
+                            </a>
+                        </li>
+                    @endif
+
                     {{-- Sección visible solo para administradores --}}
                     @if(auth()->check() && auth()->user()->hasAnyRole(['Administrador','administrador','admin']))
                         <li class="nav-header mt-2">CONFIGURACIONES</li>
