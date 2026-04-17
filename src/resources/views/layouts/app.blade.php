@@ -268,6 +268,8 @@
 <script src="{{ asset('js/adminlte.min.js') }}"></script>
 {{-- Custom JS --}}
 <script src="{{ asset('js/app.js') }}"></script>
+{{-- Flujo Manager (Gestión de flujos con validación) --}}
+<script src="{{ asset('js/flujo-manager.js') }}"></script>
 
 @yield('scripts')
 

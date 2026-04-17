@@ -8,6 +8,9 @@ use App\Models\EstadoProceso;
 use App\Models\CriticidadProceso;
 use App\Models\UnidadResponsable;
 use App\Models\Persona;
+use App\Models\TipoFlujo;
+use App\Models\TipoActor;
+use App\Models\TipoProcesoDocumento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -22,8 +25,10 @@ class ProcesoController extends Controller
     {
         $q = $request->get('q');
         $procesos = Proceso::query()
-            ->when($q, fn($b) => $b->where('descripcion', 'ilike', "%{$q}%")
-                ->orWhere('codigo', 'ilike', "%{$q}%"))
+            ->when($q, function($b) use ($q) {
+                return $b->where('descripcion', 'ilike', "%{$q}%")
+                         ->orWhere('codigo', 'ilike', "%{$q}%");
+            })
             ->with(['tipoProceso', 'estadoProceso', 'criticidadProceso', 'unidadResponsable', 'flujos'])
             ->orderBy('codigo')
             ->get();
@@ -66,10 +71,9 @@ class ProcesoController extends Controller
             'requiere_revision' => 'boolean',
         ]);
 
-        $proceso = Proceso::create([
+        $proceso = Proceso::create(array_merge([
             'id' => (string) Str::uuid(),
-            ...$data,
-        ]);
+        ], $data));
 
         return redirect()->route('internal.procesos.show', $proceso->id)->with('success', 'Proceso creado correctamente.');
     }
@@ -78,9 +82,15 @@ class ProcesoController extends Controller
     {
         $proceso->load(['tipoProceso', 'estadoProceso', 'criticidadProceso', 'unidadResponsable', 'responsable', 'procesoPadre', 'flujos' => function($q) {
             $q->with(['tipoFlujo', 'personas', 'tiposActores']);
-        }]);
+        }, 'documentos.tipoDocumento']);
 
-        return view('internal.procesos.show', compact('proceso'));
+        // Datos auxiliares requeridos por los modales incluidos en la vista
+        $tiposFlujo = TipoFlujo::orderBy('descripcion')->get();
+        $personas = Persona::orderBy('apellido')->get();
+        $tiposActores = TipoActor::orderBy('descripcion')->get();
+        $tiposDocumento = TipoProcesoDocumento::orderBy('descripcion')->get();
+
+        return view('internal.procesos.show', compact('proceso', 'tiposFlujo', 'personas', 'tiposActores', 'tiposDocumento'));
     }
 
     public function edit(Proceso $proceso)

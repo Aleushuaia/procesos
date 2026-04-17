@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
         // Create processes and flows
         $this->call([
             ProcesosSeeder::class,
+            TipoProcesoDocumentoSeeder::class,
         ]);
 
         // Create test users with roles assigned

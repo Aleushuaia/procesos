@@ -70,6 +70,11 @@ class Proceso extends Model
         return $this->hasMany(Flujo::class, 'proceso_id');
     }
 
+    public function documentos()
+    {
+        return $this->hasMany(ProcesoDocumento::class, 'proceso_id')->with('tipoDocumento')->orderBy('created_at', 'desc');
+    }
+
     // Métodos de acceso
     public function getNombreCompletoAttribute()
     {
