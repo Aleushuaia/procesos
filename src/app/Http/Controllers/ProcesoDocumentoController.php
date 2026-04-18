@@ -83,6 +83,62 @@ class ProcesoDocumentoController extends Controller
     }
 
     /**
+     * Show the form for editing the specified document
+     */
+    public function edit(Proceso $proceso, ProcesoDocumento $documento)
+    {
+        if ($documento->proceso_id !== $proceso->id) {
+            abort(404);
+        }
+
+        $documento->load('tipoDocumento');
+        $tiposDocumento = TipoProcesoDocumento::orderBy('descripcion')->get();
+
+        return view('internal.procesos.documentos.edit', compact('proceso', 'documento', 'tiposDocumento'));
+    }
+
+    /**
+     * Update the specified document
+     */
+    public function update(Request $request, Proceso $proceso, ProcesoDocumento $documento)
+    {
+        if ($documento->proceso_id !== $proceso->id) {
+            abort(404);
+        }
+
+        $validated = $request->validate([
+            'descripcion'              => 'required|string|max:100',
+            'tipo_proceso_documento_id' => 'required|exists:tipos_procesos_documentos,id',
+        ]);
+
+        $documento->update([
+            'descripcion'               => $validated['descripcion'],
+            'tipo_proceso_documento_id' => $validated['tipo_proceso_documento_id'],
+        ]);
+
+        $documento->load('tipoDocumento');
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Documento actualizado correctamente',
+                'documento' => [
+                    'id'           => $documento->id,
+                    'descripcion'  => $documento->descripcion,
+                    'tipo'         => $documento->tipoDocumento->descripcion ?? '-',
+                    'nombre'       => $documento->nombre_archivo,
+                    'tamanio'      => $documento->tamanio_formateado,
+                    'extension'    => $documento->extension,
+                    'fecha'        => $documento->created_at->format('d/m/Y H:i'),
+                ],
+            ]);
+        }
+
+        return redirect(route('internal.procesos.show', $proceso->id) . '?panel=documentos')
+            ->with('success', 'Documento actualizado correctamente');
+    }
+
+    /**
      * Stream the PDF document directly to the browser
      */
     public function show(Proceso $proceso, ProcesoDocumento $documento)

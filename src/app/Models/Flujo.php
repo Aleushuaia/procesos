@@ -49,4 +49,9 @@ class Flujo extends Model
     {
         return $this->belongsToMany(TipoActor::class, 'flujo_rol', 'flujo_id', 'tipo_actor_id');
     }
+
+    public function documentos()
+    {
+        return $this->hasMany(FlujoDocumento::class, 'flujo_id');
+    }
 }

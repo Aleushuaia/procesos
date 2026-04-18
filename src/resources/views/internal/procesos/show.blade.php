@@ -16,7 +16,7 @@
                 <i class="fas fa-info-circle text-primary mr-2"></i>
                 <h5 class="mb-0">Detalles del Proceso</h5>
             </div>
-            <div class="collapse show" id="detallesContent">
+            <div class="collapse" id="detallesContent">
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-md-2 mb-3 mb-md-0">
@@ -93,25 +93,27 @@
                     <i class="fas fa-file-pdf text-danger mr-2"></i>
                     <h5 class="mb-0">Documentos Asociados <span class="badge badge-danger ml-2">{{ $proceso->documentos->count() }}</span></h5>
                 </div>
-                <button class="btn btn-primary-pro btn-sm" data-toggle="modal" data-target="#uploadDocumentoModal" onclick="event.stopPropagation();"><i class="fas fa-upload mr-1"></i>Subir</button>
+                <div class="panel-actions ml-auto">
+                    <button class="btn btn-primary-pro btn-sm" data-toggle="modal" data-target="#uploadDocumentoModal" onclick="event.stopPropagation();"><i class="fas fa-upload mr-1"></i>Subir</button>
+                </div>
             </div>
-            <div class="collapse show" id="documentosContent">
+            <div class="collapse" id="documentosContent">
                 <div class="card-body p-0">
                     @if($proceso->documentos->count() > 0)
                         <div class="table-responsive">
                             <table class="table-crud w-100">
-                                <thead><tr><th>Descripción</th><th>Tipo</th><th>Archivo</th><th class="text-center">Tamaño</th><th>Fecha</th><th style="width:100px;">Acciones</th></tr></thead>
+                                <thead><tr><th style="width:25%;">Descripción</th><th style="width:15%;">Tipo</th><th style="width:30%;">Archivo</th><th style="width:10%;">Tamaño</th><th style="width:10%;">Fecha</th><th style="width:10%;"></th></tr></thead>
                                 <tbody>
                                     @foreach($proceso->documentos as $doc)
                                         <tr>
-                                            <td><strong class="text-primary">{{ $doc->descripcion }}</strong></td>
-                                            <td><span class="badge badge-secondary">{{ $doc->tipoDocumento->descripcion ?? '-' }}</span></td>
-                                            <td><a href="{{ route('internal.procesos.documentos.show', [$proceso->id, $doc->id]) }}" target="_blank"><i class="fas fa-file-pdf text-danger mr-1"></i>{{ $doc->nombre_archivo }}</a></td>
-                                            <td class="text-center"><small class="text-muted">{{ $doc->tamanio_formateado }}</small></td>
-                                            <td><small class="text-muted">{{ $doc->created_at->format('d/m/Y') }}</small></td>
-                                            <td><div class="action-buttons">
-                                                <a href="{{ route('internal.procesos.documentos.show', [$proceso->id, $doc->id]) }}" target="_blank" class="btn-action btn-show" title="Abrir"><i class="fas fa-eye"></i></a>
-                                                <button class="btn-action btn-delete" onclick="eliminarDocumento('{{ $proceso->id }}', '{{ $doc->id }}', '{{ addslashes($doc->nombre_archivo) }}')"><i class="fas fa-trash"></i></button>
+                                            <td><span class="text-white">{{ $doc->descripcion }}</span></td>
+                                            <td><span class="text-white">{{ $doc->tipoDocumento->descripcion ?? '-' }}</span></td>
+                                            <td><span class="text-white"><i class="fas fa-file-pdf text-danger mr-1"></i>{{ $doc->nombre_archivo }}</span></td>
+                                            <td><span class="text-white">{{ $doc->tamanio_formateado }}</span></td>
+                                            <td><span class="text-white">{{ $doc->created_at->format('d/m/Y') }}</span></td>
+                                            <td><div class="action-buttons d-flex justify-content-end">
+                                                <a href="{{ route('internal.procesos.documentos.edit', [$proceso->id, $doc->id]) }}" class="btn-action btn-edit" title="Editar datos del documento asociado"><i class="fas fa-pencil-alt"></i></a>
+                                                <button class="btn-action btn-delete" onclick="confirmDeleteDocument('{{ $proceso->id }}', '{{ $doc->id }}', '{{ addslashes($doc->nombre_archivo) }}')" title="Eliminar"><i class="fas fa-trash"></i></button>
                                             </div></td>
                                         </tr>
                                     @endforeach
@@ -135,22 +137,28 @@
                     <i class="fas fa-project-diagram text-primary mr-2"></i>
                     <h5 class="mb-0">Flujos Asociados <span class="badge badge-primary ml-2">{{ $proceso->flujos->count() }}</span></h5>
                 </div>
-                <button class="btn btn-primary-pro btn-sm" data-toggle="modal" data-target="#createFlujModal" onclick="event.stopPropagation(); setCreateModalProcessId('{{ $proceso->id }}');"><i class="fas fa-plus mr-1"></i>Nuevo</button>
+                <div class="panel-actions ml-auto">
+                    <button class="btn btn-primary-pro btn-sm" data-toggle="modal" data-target="#createFlujModal" onclick="event.stopPropagation(); setCreateModalProcessId('{{ $proceso->id }}');"><i class="fas fa-plus mr-1"></i>Nuevo</button>
+                </div>
             </div>
-            <div class="collapse show" id="flujosContent">
+            <div class="collapse" id="flujosContent">
                 <div class="card-body p-0">
                     @if($proceso->flujos->count() > 0)
                         <div class="table-responsive">
                             <table class="table-crud w-100">
-                                <thead><tr><th>Descripción</th><th>Tipo</th><th class="text-center">Personas</th><th class="text-center">Roles</th><th style="width:100px;">Acciones</th></tr></thead>
+                                <thead><tr><th style="width:12%;">Fecha Inicio</th><th style="width:12%;">Fecha Firma</th><th style="width:38%;">Descripción</th><th style="width:13%;">Tipo</th><th style="width:10%;">Documentos</th><th style="width:15%;"></th></tr></thead>
                                 <tbody>
                                     @foreach($proceso->flujos as $flujo)
-                                        <tr>
-                                            <td><strong class="text-primary">{{ $flujo->descripcion }}</strong>@if($flujo->observaciones)<small class="text-muted d-block">{{ Str::limit($flujo->observaciones, 60) }}</small>@endif</td>
-                                            <td><span class="badge badge-info">{{ $flujo->tipoFlujo->descripcion ?? '-' }}</span></td>
-                                            <td class="text-center"><span class="badge badge-secondary">{{ $flujo->personas->count() }}</span></td>
-                                            <td class="text-center"><span class="badge badge-warning">{{ $flujo->tiposActores->count() }}</span></td>
-                                            <td><button class="btn-action btn-show" data-toggle="modal" data-target="#showFlujoModal" onclick="loadFlujoDetailsModal('{{ $proceso->id }}', '{{ $flujo->id }}')"><i class="fas fa-eye"></i></button></td>
+                                        <tr onclick="window.location.href='{{ route('internal.procesos.flujos.show', [$proceso->id, $flujo->id]) }}'">
+                                            <td><span class="text-white">{{ $flujo->fecha_inicio_analisis ? $flujo->fecha_inicio_analisis->format('d/m/Y') : '-' }}</span></td>
+                                            <td><span class="text-white">{{ $flujo->fecha_firma_version ? $flujo->fecha_firma_version->format('d/m/Y') : '-' }}</span></td>
+                                            <td><span class="text-white">{{ $flujo->descripcion }}</span></td>
+                                            <td><span class="text-white">{{ $flujo->tipoFlujo->descripcion ?? '-' }}</span></td>
+                                            <td><span class="badge badge-primary">{{ $flujo->documentos->count() }}</span></td>
+                                            <td><div class="action-buttons d-flex justify-content-end" onclick="event.stopPropagation();">
+                                                <a href="{{ route('internal.procesos.flujos.edit', [$proceso->id, $flujo->id]) }}" class="btn-action btn-edit" title="Editar"><i class="fas fa-pencil-alt"></i></a>
+                                                <button class="btn-action btn-delete" onclick="eliminarFlujo('{{ $proceso->id }}', '{{ $flujo->id }}', '{{ addslashes($flujo->descripcion) }}')" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                            </div></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -190,16 +198,93 @@
     </div>
 </div>
 
+<!-- MODAL: Confirmar eliminación de documento -->
+<div class="modal fade" id="deleteDocumentoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-danger mr-2"></i>
+                    Confirmar eliminación
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">¿Estás seguro de que deseas eliminar este documento?</p>
+                <small class="text-muted d-block mt-2" id="deleteDocumentoName"></small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash mr-1"></i>Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @include('internal.flujos.create')
 @include('internal.flujos.show')
 
 <style>
-.card-header { cursor: pointer; }
+/* Page title smaller for better balance */
+.content-header .m-0 { font-size: 1.25rem; }
+
+/* Reduce panel header typography slightly */
+.card-header h5.mb-0 { font-size: 0.95rem; margin:0; }
+.card-header { cursor: pointer; padding: .5rem .75rem; }
+.card { font-size: 0.9375rem; }
+
+/* Smaller badges/text inside panels */
+.card .badge { font-size: 0.8125rem; }
+
 .panel-icon { display: inline-block; }
 .collapse:not(.show) ~ .card-header .panel-icon { transform: rotate(-90deg); }
+
+/* Ensure panel action buttons align to the right */
+.card-header .panel-actions { margin-left: auto; }
+
+/* Table typography standardization */
+.table-crud { font-size: 0.875rem; border-collapse: collapse; }
+.table-crud thead { background-color: #f8f9fa; }
+.table-crud th { 
+    font-size: 0.8125rem; 
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.75rem;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+.table-crud tbody tr { border-bottom: 1px solid #dee2e6; cursor: pointer; }
+.table-crud tbody td { 
+    padding: 0.75rem;
+    vertical-align: middle;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: white;
+}
+.table-crud tbody td span,
+.table-crud tbody td strong { 
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: white;
+}
 </style>
 
 <script>
+// Open specific panel if requested via query parameter
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    const panelToOpen = params.get('panel');
+    if (panelToOpen === 'documentos') {
+        const documentosPanel = document.getElementById('documentosContent');
+        if (documentosPanel) {
+            documentosPanel.classList.add('show');
+        }
+    }
+});
+
 document.querySelectorAll('[data-toggle="collapse"]').forEach(el => {
     el.addEventListener('click', function() {
         const target = document.querySelector(this.getAttribute('data-target'));
@@ -219,10 +304,41 @@ function loadFlujoDetailsModal(pId, fId) {
     fetch(`/internal/procesos/${pId}/flujos/${fId}`, {headers: {'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content}})
         .then(r => r.json()).then(d => { cont.innerHTML = `<p>${d.descripcion}</p>`; }).catch(() => { cont.innerHTML = '<div class="alert alert-danger">Error</div>'; });
 }
-function eliminarDocumento(pId, dId, name) {
-    if(!confirm(`¿Eliminar "${name}"?`)) return;
-    fetch(`/internal/procesos/${pId}/documentos/${dId}`, {method: 'DELETE', headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json'}})
-        .then(r => r.json()).then(d => { if(d.success) location.reload(); }).catch(() => alert('Error'));
+
+// Documento elimination with modal confirmation
+function confirmDeleteDocument(pId, dId, name) {
+    document.getElementById('deleteDocumentoName').textContent = `Archivo: ${name}`;
+    window.deleteDocInfo = { procesId: pId, docId: dId };
+    $('#deleteDocumentoModal').modal('show');
+}
+
+document.getElementById('confirmDeleteBtn')?.addEventListener('click', function() {
+    const { procesId, docId } = window.deleteDocInfo || {};
+    if (!procesId || !docId) return;
+    
+    fetch(`/internal/procesos/${procesId}/documentos/${docId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        }
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            $('#deleteDocumentoModal').modal('hide');
+            location.reload();
+        } else {
+            alert('Error al eliminar el documento');
+        }
+    })
+    .catch(() => alert('Error al eliminar el documento'));
+});
+
+function eliminarFlujo(pId, fId, name) {
+    if(!confirm(`¿Eliminar flujo "${name}"?`)) return;
+    fetch(`/internal/procesos/${pId}/flujos/${fId}`, {method: 'DELETE', headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json'}})
+        .then(r => r.json()).then(d => { if(d.success) location.reload(); }).catch(() => alert('Error al eliminar'));
 }
 
 document.getElementById('uploadDocumentoForm')?.addEventListener('submit', function(e) {

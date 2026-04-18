@@ -96,7 +96,7 @@ class FlujoController extends Controller
             abort(404);
         }
 
-        $flujo->load(['tipoFlujo', 'personas', 'tiposActores']);
+        $flujo->load(['tipoFlujo', 'personas', 'tiposActores', 'documentos']);
 
         if (request()->wantsJson()) {
             return response()->json([
@@ -115,7 +115,11 @@ class FlujoController extends Controller
             ]);
         }
 
-        return view('internal.flujos.show', compact('proceso', 'flujo'));
+        // Cargar datos necesarios para la vista
+        $personas = Persona::orderBy('apellido')->get();
+        $tiposActores = TipoActor::orderBy('descripcion')->get();
+
+        return view('internal.flujos.show_standalone', compact('proceso', 'flujo', 'personas', 'tiposActores'));
     }
 
     /**
@@ -137,7 +141,7 @@ class FlujoController extends Controller
         $personasSeleccionadas = $flujo->personas->pluck('id')->toArray();
         $tiposActoresSeleccionados = $flujo->tiposActores->pluck('id')->toArray();
 
-        return view('internal.flujos.edit', compact(
+        return view('internal.flujos.edit_standalone', compact(
             'proceso',
             'flujo',
             'tiposFlujo',
@@ -184,11 +188,16 @@ class FlujoController extends Controller
         // Sincronizar tipos de actores
         $flujo->tiposActores()->sync(isset($validated['tipos_actores']) ? $validated['tipos_actores'] : []);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Flujo actualizado correctamente',
-            'redirect' => route('internal.procesos.show', $proceso->id)
-        ]);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Flujo actualizado correctamente',
+                'redirect' => route('internal.procesos.show', $proceso->id)
+            ]);
+        }
+
+        return redirect()->route('internal.procesos.flujos.show', [$proceso->id, $flujo->id])
+            ->with('success', 'Flujo actualizado correctamente');
     }
 
     /**

@@ -48,9 +48,21 @@ Route::middleware('auth')->group(function () {
             // Flujos nested resource under procesos
             Route::resource('procesos.flujos', App\Http\Controllers\FlujoController::class);
             
+            // Documentos nested resource under flujos
+            Route::resource('procesos.flujos.documentos', App\Http\Controllers\FlujoDocumentoController::class)
+                ->only(['store', 'show', 'destroy']);
+            
+            // Personas nested resource under flujos
+            Route::resource('procesos.flujos.personas', App\Http\Controllers\FlujoPersonaController::class)
+                ->only(['store', 'destroy']);
+            
+            // Roles nested resource under flujos
+            Route::resource('procesos.flujos.roles', App\Http\Controllers\FlujoRolController::class)
+                ->only(['store', 'destroy']);
+            
             // Documentos nested resource under procesos
             Route::resource('procesos.documentos', App\Http\Controllers\ProcesoDocumentoController::class)
-                ->only(['store', 'show', 'destroy']);
+                ->only(['store', 'show', 'edit', 'update', 'destroy']);
         });
     });
 });

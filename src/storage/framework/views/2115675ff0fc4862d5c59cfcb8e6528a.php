@@ -276,7 +276,7 @@ function renderTable(procesos) {
 
     procesos.forEach(proceso => {
         const row = `
-            <tr>
+            <tr class="clickable-row" data-url="/internal/procesos/${proceso.id}">
                 <td>
                     <strong class="text-white">${proceso.codigo || '-'}</strong>
                     ${proceso.requiere_revision ? `<div><small class="text-danger d-inline" style="font-size:0.65rem;">En revisión</small> <small class="text-white d-inline" style="font-size:0.65rem;">&#9733; ${proceso.flujos ? proceso.flujos.length : 0} flujos</small></div>` : `<div><small class="text-white d-inline" style="font-size:0.65rem;">&#9733; ${proceso.flujos ? proceso.flujos.length : 0} flujos</small></div>`}
@@ -453,6 +453,13 @@ $(document).ready(function() {
     $('th[data-sort="codigo"]').find('i').removeClass('fa-sort text-muted').addClass('fa-sort-up text-warning');
 
     loadProcesos(1);
+});
+
+// Navigate to proceso show when clicking a row (ignore clicks on action buttons)
+$('#procesosTableBody').on('click', 'tr.clickable-row', function(e) {
+    if ($(e.target).closest('.action-buttons').length) return;
+    const url = $(this).data('url');
+    if (url) window.location.href = url;
 });
 </script>
 <?php $__env->stopSection(); ?>
