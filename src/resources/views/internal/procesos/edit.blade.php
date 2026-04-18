@@ -16,10 +16,7 @@
             @csrf
             @method('PUT')
             
-            <h5 class="mb-4">
-                <i class="fas fa-sitemap mr-2 text-primary"></i>
-                Información Básica
-            </h5>
+            
 
             <div class="row">
                 <div class="col-md-6">
@@ -58,11 +55,7 @@
                 @enderror
             </div>
 
-            <hr class="my-4">
-            <h5 class="mb-4">
-                <i class="fas fa-cogs mr-2 text-primary"></i>
-                Configuración
-            </h5>
+            
 
             <div class="row">
                 <div class="col-md-6">
@@ -80,6 +73,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    
                 </div>
 
                 <div class="col-md-6">
@@ -97,6 +91,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    
                 </div>
             </div>
 
@@ -116,6 +111,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    
                 </div>
 
                 <div class="col-md-6">
@@ -182,14 +178,18 @@
             </div>
 
             <div class="form-group mt-4">
-                <button type="submit" class="btn btn-primary-pro">
+                <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save mr-2"></i> Guardar Cambios
                 </button>
-                <a href="{{ route('internal.procesos.show', $proceso->id) }}" class="btn btn-secondary-pro">
+                <a href="{{ route('internal.procesos.show', $proceso->id) }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i> Volver
                 </a>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+// Previews removed per UX decision: no colored badges in edit view.
+</script>
 @endsection

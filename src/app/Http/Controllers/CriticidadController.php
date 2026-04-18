@@ -27,8 +27,10 @@ class CriticidadController extends Controller
     {
         $validated = $request->validate([
             'descripcion' => 'required|string|max:255|unique:criticidades_procesos',
+            'color'       => 'nullable|string|max:7',
         ]);
-        
+
+        $validated['color'] = $validated['color'] ?? '#6c757d';
         CriticidadProceso::create($validated);
         
         return redirect()->route('internal.criticidades.index')->with('success', 'Criticidad creada exitosamente');
@@ -49,11 +51,13 @@ class CriticidadController extends Controller
     public function update(Request $request, $id)
     {
         $criticidad = CriticidadProceso::findOrFail($id);
-        
+
         $validated = $request->validate([
             'descripcion' => 'required|string|max:255|unique:criticidades_procesos,descripcion,' . $id,
+            'color'       => 'nullable|string|max:7',
         ]);
-        
+
+        $validated['color'] = $validated['color'] ?? $criticidad->color ?? '#6c757d';
         $criticidad->update($validated);
         
         return redirect()->route('internal.criticidades.index')->with('success', 'Criticidad actualizada exitosamente');

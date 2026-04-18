@@ -67,7 +67,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="tipo_proceso_id">Tipo de Proceso <span class="text-danger">*</span></label>
-                        <select class="form-control @error('tipo_proceso_id') is-invalid @enderror" id="tipo_proceso_id" name="tipo_proceso_id" required>
+                        <select class="form-control @error('tipo_proceso_id') is-invalid @enderror" id="tipo_proceso_id" name="tipo_proceso_id" required data-colors="{{ json_encode($tiposProceso->pluck('color', 'id')) }}" data-iconos="{{ json_encode($tiposProceso->pluck('icono', 'id')) }}">
                             <option value="">-- Seleccionar --</option>
                             @foreach($tiposProceso as $tipo)
                                 <option value="{{ $tipo->id }}" {{ old('tipo_proceso_id') == $tipo->id ? 'selected' : '' }}>
@@ -79,12 +79,13 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div id="tipoPreview" style="display: none; padding: 10px; border-radius: 4px; color: white; margin-top: 8px; font-weight: 500; text-align: center;"></div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="estado_proceso_id">Estado <span class="text-danger">*</span></label>
-                        <select class="form-control @error('estado_proceso_id') is-invalid @enderror" id="estado_proceso_id" name="estado_proceso_id" required>
+                        <select class="form-control @error('estado_proceso_id') is-invalid @enderror" id="estado_proceso_id" name="estado_proceso_id" required data-colors="{{ json_encode($estadosProceso->pluck('color', 'id')) }}">
                             <option value="">-- Seleccionar --</option>
                             @foreach($estadosProceso as $estado)
                                 <option value="{{ $estado->id }}" {{ old('estado_proceso_id') == $estado->id ? 'selected' : '' }}>
@@ -96,6 +97,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div id="estadoPreview" style="display: none; padding: 10px; border-radius: 4px; color: white; margin-top: 8px; font-weight: 500; text-align: center;"></div>
                 </div>
             </div>
 
@@ -103,7 +105,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="criticidad_proceso_id">Criticidad <span class="text-danger">*</span></label>
-                        <select class="form-control @error('criticidad_proceso_id') is-invalid @enderror" id="criticidad_proceso_id" name="criticidad_proceso_id" required>
+                        <select class="form-control @error('criticidad_proceso_id') is-invalid @enderror" id="criticidad_proceso_id" name="criticidad_proceso_id" required data-colors="{{ json_encode($criticidadesProceso->pluck('color', 'id')) }}">
                             <option value="">-- Seleccionar --</option>
                             @foreach($criticidadesProceso as $criticidad)
                                 <option value="{{ $criticidad->id }}" {{ old('criticidad_proceso_id') == $criticidad->id ? 'selected' : '' }}>
@@ -115,6 +117,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div id="criticidadPreview" style="display: none; padding: 10px; border-radius: 4px; color: white; margin-top: 8px; font-weight: 500; text-align: center;"><i class="fas fa-exclamation-triangle mr-2"></i><span id="criticidadPreviewText"></span></div>
                 </div>
 
                 <div class="col-md-6">
@@ -181,14 +184,80 @@
             </div>
 
             <div class="form-group mt-4">
-                <button type="submit" class="btn btn-primary-pro">
+                <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save mr-2"></i> Guardar Proceso
                 </button>
-                <a href="{{ route('internal.procesos.index') }}" class="btn btn-secondary-pro">
+                <a href="{{ route('internal.procesos.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i> Volver
                 </a>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tipoSelect = document.getElementById('tipo_proceso_id');
+    const estadoSelect = document.getElementById('estado_proceso_id');
+    const criticidadSelect = document.getElementById('criticidad_proceso_id');
+    
+    const tipoColors = JSON.parse(tipoSelect.dataset.colors || '{}');
+    const tipoIconos = JSON.parse(tipoSelect.dataset.iconos || '{}');
+    const estadoColors = JSON.parse(estadoSelect.dataset.colors || '{}');
+    const criticidadColors = JSON.parse(criticidadSelect.dataset.colors || '{}');
+    
+    const tipoPreview = document.getElementById('tipoPreview');
+    const estadoPreview = document.getElementById('estadoPreview');
+    const criticidadPreview = document.getElementById('criticidadPreview');
+    
+    function updateTipoPreview() {
+        const selectedId = tipoSelect.value;
+        const selectedText = tipoSelect.options[tipoSelect.selectedIndex].text;
+        if (selectedId) {
+            const color = tipoColors[selectedId] || '#0c5aa0';
+            const icono = tipoIconos[selectedId] || 'fa-folder';
+            tipoPreview.style.display = 'block';
+            tipoPreview.style.backgroundColor = color;
+            tipoPreview.innerHTML = `<i class="fas ${icono} mr-2"></i>${selectedText}`;
+        } else {
+            tipoPreview.style.display = 'none';
+        }
+    }
+    
+    function updateEstadoPreview() {
+        const selectedId = estadoSelect.value;
+        const selectedText = estadoSelect.options[estadoSelect.selectedIndex].text;
+        if (selectedId) {
+            const color = estadoColors[selectedId] || '#6c757d';
+            estadoPreview.style.display = 'block';
+            estadoPreview.style.backgroundColor = color;
+            estadoPreview.textContent = selectedText;
+        } else {
+            estadoPreview.style.display = 'none';
+        }
+    }
+    
+    function updateCriticidadPreview() {
+        const selectedId = criticidadSelect.value;
+        const selectedText = criticidadSelect.options[criticidadSelect.selectedIndex].text;
+        if (selectedId) {
+            const color = criticidadColors[selectedId] || '#dc3545';
+            criticidadPreview.style.display = 'block';
+            criticidadPreview.style.backgroundColor = color;
+            document.getElementById('criticidadPreviewText').textContent = selectedText;
+        } else {
+            criticidadPreview.style.display = 'none';
+        }
+    }
+    
+    tipoSelect.addEventListener('change', updateTipoPreview);
+    estadoSelect.addEventListener('change', updateEstadoPreview);
+    criticidadSelect.addEventListener('change', updateCriticidadPreview);
+    
+    // Initialize previews on page load
+    updateTipoPreview();
+    updateEstadoPreview();
+    updateCriticidadPreview();
+});
+</script>
 @endsection

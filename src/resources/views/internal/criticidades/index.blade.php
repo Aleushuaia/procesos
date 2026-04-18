@@ -11,42 +11,44 @@
 
 @section('content')
 <div class="row">
-    <div class="col-12">
+    <div class="col-lg-8 col-md-10 col-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h3 class="card-title">Lista de Criticidades</h3>
-                <div>
-                    <a href="{{ route('internal.criticidades.create') }}" class="btn btn-primary-pro">
-                        <i class="fas fa-plus mr-2"></i> Nueva Criticidad
-                    </a>
-                </div>
+                <h5 class="card-title mb-0"><i class="fas fa-exclamation-circle mr-2"></i>Criticidades</h5>
+                <a href="{{ route('internal.criticidades.create') }}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-plus mr-1"></i> Nueva Criticidad
+                </a>
             </div>
             <div class="card-body p-0">
                 @if($criticidades && count($criticidades) > 0)
                     <table class="table-crud w-100">
                         <thead>
                             <tr>
+                                <th style="width: 40px;"></th>
                                 <th>Descripción</th>
-                                <th>Creado</th>
+                                <th>Etiqueta</th>
                                 <th style="width: 120px;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($criticidades as $criticidad)
                                 <tr onclick="window.location.href='{{ route('internal.criticidades.show', $criticidad->id) }}'" style="cursor: pointer;">
-                                    <td><strong>{{ $criticidad->descripcion }}</strong></td>
-                                    <td>{{ $criticidad->created_at ? $criticidad->created_at->format('d/m/Y') : '-' }}</td>
+                                    <td class="text-center">
+                                        <span class="badge" style="background-color: {{ $criticidad->color ?? '#6c757d' }}; color: white; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem;">
+                                            {{ strtoupper(substr($criticidad->descripcion, 0, 1)) }}
+                                            </span>
+                                    </td>
+                                    <td><strong>{{ $criticidad->descripcion ?? 'Sin descripción' }}</strong></td>
+                                    <td>
+                                        <span class="badge p-2" style="background-color: {{ $criticidad->color ?? '#6c757d' }}; color: white;">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i>{{ $criticidad->descripcion }}
+                                        </span>
+                                    </td>
                                     <td onclick="event.stopPropagation();">
                                         <div class="action-buttons">
-                                            <a href="{{ route('internal.criticidades.show', $criticidad->id) }}" class="btn-action btn-show" title="Ver">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('internal.criticidades.edit', $criticidad->id) }}" class="btn-action btn-edit" title="Editar">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </a>
-                                            <button type="button" class="btn-action btn-delete" title="Eliminar" onclick="confirmDelete('{{ route('internal.criticidades.destroy', $criticidad->id) }}')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            <a href="{{ route('internal.criticidades.show', $criticidad->id) }}" class="btn-action btn-show" title="Ver"><i class="fas fa-eye"></i></a>
+                                            <a href="{{ route('internal.criticidades.edit', $criticidad->id) }}" class="btn-action btn-edit" title="Editar"><i class="fas fa-pencil-alt"></i></a>
+                                            <button type="button" class="btn-action btn-delete" title="Eliminar" onclick="confirmDelete('{{ route('internal.criticidades.destroy', $criticidad->id) }}')"><i class="fas fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -54,12 +56,10 @@
                         </tbody>
                     </table>
                 @else
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p class="mt-3">No hay criticidades registradas</p>
-                        <a href="{{ route('internal.criticidades.create') }}" class="btn btn-primary-pro mt-3">
-                            <i class="fas fa-plus mr-2"></i> Crear primera Criticidad
-                        </a>
+                    <div class="empty-state text-center py-4">
+                        <i class="fas fa-inbox" style="font-size: 2rem; opacity: 0.3;"></i>
+                        <p class="mt-3 text-muted">No hay criticidades registradas</p>
+                        <a href="{{ route('internal.criticidades.create') }}" class="btn btn-secondary btn-sm mt-2"><i class="fas fa-plus mr-1"></i> Crear primera</a>
                     </div>
                 @endif
             </div>
@@ -67,25 +67,20 @@
     </div>
 </div>
 
-<!-- Modal de confirmación para eliminar -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle mr-2 text-danger"></i>Confirmar Eliminación</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
-            <div class="modal-body">
-                ¿Estás seguro de que deseas eliminar esta criticidad? Esta acción no se puede deshacer.
-            </div>
+            <div class="modal-body">¿Estás seguro de que deseas eliminar esta criticidad? Esta acción no se puede deshacer.</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary-pro" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <form id="deleteForm" method="POST" style="display: inline;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger-pro">Eliminar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
                 </form>
             </div>
         </div>

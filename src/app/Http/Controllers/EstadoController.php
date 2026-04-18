@@ -27,8 +27,10 @@ class EstadoController extends Controller
     {
         $validated = $request->validate([
             'descripcion' => 'required|string|max:255|unique:estados_procesos',
+            'color'       => 'nullable|string|max:7',
         ]);
-        
+
+        $validated['color'] = $validated['color'] ?? '#6c757d';
         EstadoProceso::create($validated);
         
         return redirect()->route('internal.estados.index')->with('success', 'Estado creado exitosamente');
@@ -49,11 +51,13 @@ class EstadoController extends Controller
     public function update(Request $request, $id)
     {
         $estado = EstadoProceso::findOrFail($id);
-        
+
         $validated = $request->validate([
             'descripcion' => 'required|string|max:255|unique:estados_procesos,descripcion,' . $id,
+            'color'       => 'nullable|string|max:7',
         ]);
-        
+
+        $validated['color'] = $validated['color'] ?? $estado->color ?? '#6c757d';
         $estado->update($validated);
         
         return redirect()->route('internal.estados.index')->with('success', 'Estado actualizado exitosamente');

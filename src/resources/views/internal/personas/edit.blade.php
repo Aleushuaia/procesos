@@ -41,10 +41,10 @@
             </div>
 
             <div class="form-group mt-4">
-                <button type="submit" class="btn btn-primary-pro">
+                <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save mr-2"></i> Guardar cambios
                 </button>
-                <a href="{{ route('internal.personas.index') }}" class="btn btn-secondary-pro">
+                <a href="{{ route('internal.personas.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left mr-2"></i> Volver
                 </a>
             </div>

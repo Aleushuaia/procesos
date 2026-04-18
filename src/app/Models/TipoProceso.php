@@ -14,7 +14,7 @@ class TipoProceso extends Model
     protected $table = 'tipos_procesos';
     public $incrementing = false;
     protected $keyType = 'uuid';
-    protected $fillable = ['id', 'descripcion'];
+    protected $fillable = ['id', 'descripcion', 'color', 'icono'];
 
     protected static function boot()
     {

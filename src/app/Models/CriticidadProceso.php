@@ -14,7 +14,7 @@ class CriticidadProceso extends Model
     protected $table = 'criticidades_procesos';
     public $incrementing = false;
     protected $keyType = 'uuid';
-    protected $fillable = ['id', 'descripcion'];
+    protected $fillable = ['id', 'descripcion', 'color'];
 
     protected static function boot()
     {

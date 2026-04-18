@@ -23,17 +23,106 @@ class ProcesoController extends Controller
 
     public function index(Request $request)
     {
-        $q = $request->get('q');
-        $procesos = Proceso::query()
-            ->when($q, function($b) use ($q) {
-                return $b->where('descripcion', 'ilike', "%{$q}%")
-                         ->orWhere('codigo', 'ilike', "%{$q}%");
-            })
-            ->with(['tipoProceso', 'estadoProceso', 'criticidadProceso', 'unidadResponsable', 'flujos'])
+        // Verificar si es una petición AJAX
+        if ($request->ajax()) {
+            return $this->filterProcesos($request);
+        }
+
+        // Para la carga inicial, cargar todos los datos
+        $procesos = Proceso::with(['tipoProceso', 'estadoProceso', 'criticidadProceso', 'unidadResponsable', 'flujos'])
             ->orderBy('codigo')
             ->get();
 
-        return view('internal.procesos.index', compact('procesos', 'q'));
+        // Cargar catálogos para los selectores de filtros
+        $tiposProceso = TipoProceso::orderBy('descripcion')->get();
+        $estadosProceso = EstadoProceso::orderBy('descripcion')->get();
+        $criticidadesProceso = CriticidadProceso::orderBy('descripcion')->get();
+        $unidadesResponsables = UnidadResponsable::orderBy('descripcion')->get();
+
+        return view('internal.procesos.index', compact(
+            'procesos',
+            'tiposProceso',
+            'estadosProceso',
+            'criticidadesProceso',
+            'unidadesResponsables'
+        ));
+    }
+
+    /**
+     * Filtrar procesos para peticiones AJAX
+     */
+    private function filterProcesos(Request $request)
+    {
+        $query = Proceso::with(['tipoProceso', 'estadoProceso', 'criticidadProceso', 'unidadResponsable', 'flujos']);
+
+        // Aplicar filtros
+        if ($request->get('codigo')) {
+            $query->where('codigo', 'ilike', '%' . $request->get('codigo') . '%');
+        }
+
+        if ($request->get('descripcion')) {
+            $query->where('descripcion', 'ilike', '%' . $request->get('descripcion') . '%');
+        }
+
+        if ($request->get('tipo_proceso_id')) {
+            $query->where('tipo_proceso_id', $request->get('tipo_proceso_id'));
+        }
+
+        if ($request->get('estado_proceso_id')) {
+            $query->where('estado_proceso_id', $request->get('estado_proceso_id'));
+        }
+
+        if ($request->get('criticidad_proceso_id')) {
+            $query->where('criticidad_proceso_id', $request->get('criticidad_proceso_id'));
+        }
+
+        if ($request->get('unidad_responsable_id')) {
+            $query->where('unidad_responsable_id', $request->get('unidad_responsable_id'));
+        }
+
+        // Filtrar por requiere_revision (si se envía 1 o 0)
+        if ($request->filled('requiere_revision')) {
+            $val = $request->get('requiere_revision');
+            if ($val === '1' || $val === '0') {
+                $query->where('requiere_revision', (int) $val);
+            }
+        }
+
+        // Aplicar ordenamiento (solo columnas reales de la tabla)
+        $allowedSorts = ['codigo', 'descripcion', 'tipo_proceso_id', 'estado_proceso_id', 'criticidad_proceso_id', 'unidad_responsable_id', 'created_at'];
+        $sortColumn = in_array($request->get('sort'), $allowedSorts) ? $request->get('sort') : 'codigo';
+        $sortDirection = $request->get('direction') === 'desc' ? 'desc' : 'asc';
+        $query->orderBy($sortColumn, $sortDirection);
+
+        // Aplicar paginación
+        $perPage = $request->get('per_page', 'all');
+
+        if ($perPage === 'all') {
+            $items = $query->get();
+            $total = $items->count();
+
+            return response()->json([
+                'data' => $items->values(),
+                'pagination' => [
+                    'total'        => $total,
+                    'per_page'     => $total,
+                    'current_page' => 1,
+                    'last_page'    => 1,
+                ]
+            ]);
+        }
+
+        $paginated = $query->paginate((int) $perPage);
+
+        return response()->json([
+            'data' => collect($paginated->items()),
+            'pagination' => [
+                'total'        => $paginated->total(),
+                'per_page'     => $paginated->perPage(),
+                'current_page' => $paginated->currentPage(),
+                'last_page'    => $paginated->lastPage(),
+            ]
+        ]);
     }
 
     public function create()
@@ -70,6 +159,9 @@ class ProcesoController extends Controller
             'proceso_padre_id' => 'nullable|exists:procesos,id',
             'requiere_revision' => 'boolean',
         ]);
+
+        // Ensure checkbox value is saved as 0/1 even when unchecked (not present in request)
+        $data['requiere_revision'] = $request->has('requiere_revision') ? 1 : 0;
 
         $proceso = Proceso::create(array_merge([
             'id' => (string) Str::uuid(),
@@ -130,6 +222,9 @@ class ProcesoController extends Controller
             'proceso_padre_id' => 'nullable|exists:procesos,id',
             'requiere_revision' => 'boolean',
         ]);
+
+        // Ensure checkbox value is saved as 0/1 even when unchecked (not present in request)
+        $data['requiere_revision'] = $request->has('requiere_revision') ? 1 : 0;
 
         $proceso->update($data);
 

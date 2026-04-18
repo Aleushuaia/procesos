@@ -16,13 +16,58 @@ class PersonaController extends Controller
 
     public function index(Request $request)
     {
-        $q = $request->get('q');
-        $personas = Persona::query()
-            ->when($q, fn($b) => $b->where('apellido', 'ilike', "%{$q}%")->orWhere('nombres', 'ilike', "%{$q}%"))
-            ->orderBy('apellido')
-            ->get();
+        if ($request->ajax()) {
+            return $this->filterPersonas($request);
+        }
 
-        return view('internal.personas.index', compact('personas','q'));
+        return view('internal.personas.index');
+    }
+
+    private function filterPersonas(Request $request)
+    {
+        $query = Persona::with('tiposActores');
+
+        if ($request->get('apellido')) {
+            $query->where('apellido', 'ilike', '%' . $request->get('apellido') . '%');
+        }
+        if ($request->get('nombres')) {
+            $query->where('nombres', 'ilike', '%' . $request->get('nombres') . '%');
+        }
+        if ($request->get('dni')) {
+            $query->where('dni', 'ilike', '%' . $request->get('dni') . '%');
+        }
+
+        $allowedSorts = ['apellido', 'nombres', 'dni', 'created_at'];
+        $sortColumn   = in_array($request->get('sort'), $allowedSorts) ? $request->get('sort') : 'apellido';
+        $sortDirection = $request->get('direction') === 'desc' ? 'desc' : 'asc';
+        $query->orderBy($sortColumn, $sortDirection);
+
+        $perPage = $request->get('per_page', 'all');
+
+        if ($perPage === 'all') {
+            $items = $query->get();
+            $total = $items->count();
+            return response()->json([
+                'data' => $items->values(),
+                'pagination' => [
+                    'total'        => $total,
+                    'per_page'     => $total,
+                    'current_page' => 1,
+                    'last_page'    => 1,
+                ],
+            ]);
+        }
+
+        $paginated = $query->paginate((int) $perPage);
+        return response()->json([
+            'data' => collect($paginated->items()),
+            'pagination' => [
+                'total'        => $paginated->total(),
+                'per_page'     => $paginated->perPage(),
+                'current_page' => $paginated->currentPage(),
+                'last_page'    => $paginated->lastPage(),
+            ],
+        ]);
     }
 
     public function create()

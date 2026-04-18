@@ -14,7 +14,7 @@ class EstadoProceso extends Model
     protected $table = 'estados_procesos';
     public $incrementing = false;
     protected $keyType = 'uuid';
-    protected $fillable = ['id', 'descripcion'];
+    protected $fillable = ['id', 'descripcion', 'color'];
 
     protected static function boot()
     {
