@@ -62,15 +62,6 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-auto d-flex align-items-center">
-                        <label class="form-label small fw-bold mb-0 mr-2">Unidad</label>
-                        <select class="form-control form-control-sm" id="filterUnidad" style="flex:1; padding:.25rem .5rem; height: calc(1.5em + .5rem + 2px);">
-                            <option value="">— Todos —</option>
-                            @foreach($unidadesResponsables as $unidad)
-                                <option value="{{ $unidad->id }}">{{ $unidad->descripcion }}</option>
-                            @endforeach
-                        </select>
-                    </div>
                 </div>
 
                 <div class="row mt-2">
@@ -143,10 +134,6 @@
                                     Criticidad
                                         <i class="fas fa-sort text-muted ml-1" style="font-size: 0.7rem;"></i>
                                 </th>
-                                <th style="cursor: pointer; width:13%; white-space:nowrap;" data-sort="unidad_responsable_id">
-                                    Unidad
-                                        <i class="fas fa-sort text-muted ml-1" style="font-size: 0.75rem;"></i>
-                                </th>
                                 <!-- Flujos column removed (shown next to Código) -->
                                 <th style="width:8%;">Acciones</th>
                             </tr>
@@ -217,7 +204,6 @@ const filterInputs = {
     tipo: '#filterTipo',
     estado: '#filterEstado',
     criticidad: '#filterCriticidad',
-    unidad: '#filterUnidad',
     requiere: '#filterRequiereRevision'
 };
 
@@ -231,7 +217,6 @@ function loadProcesos(page = 1) {
         tipo_proceso_id:       $(filterInputs.tipo).val(),
         estado_proceso_id:     $(filterInputs.estado).val(),
         criticidad_proceso_id: $(filterInputs.criticidad).val(),
-        unidad_responsable_id: $(filterInputs.unidad).val(),
         requiere_revision:     $(filterInputs.requiere).length ? ($(filterInputs.requiere).is(':checked') ? 1 : '') : '',
         sort:      currentSort,
         direction: currentDirection,
@@ -279,7 +264,6 @@ function renderTable(procesos) {
             <tr class="clickable-row" data-url="/internal/procesos/${proceso.id}">
                 <td>
                     <strong class="text-white">${proceso.codigo || '-'}</strong>
-                    ${proceso.requiere_revision ? `<div><small class="text-danger d-inline" style="font-size:0.65rem;">En revisión</small> <small class="text-white d-inline" style="font-size:0.65rem;">&#9733; ${proceso.flujos ? proceso.flujos.length : 0} flujos</small></div>` : `<div><small class="text-white d-inline" style="font-size:0.65rem;">&#9733; ${proceso.flujos ? proceso.flujos.length : 0} flujos</small></div>`}
                 </td>
                 <td style="overflow-wrap:break-word; word-break:break-word;">
                     <div>${proceso.descripcion || '-'}</div>
@@ -301,7 +285,6 @@ function renderTable(procesos) {
                         <i class="fas fa-exclamation-triangle" style="margin-right:6px;font-size:0.82rem;"></i>${proceso.criticidad_proceso?.descripcion || '-'}
                     </span>
                 </td>
-                <td>${proceso.unidad_responsable?.descripcion || '-'}</td>
                 <!-- Flujos moved under Tipo -->
                 <td>
                     <div class="action-buttons">

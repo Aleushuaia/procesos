@@ -13,8 +13,7 @@
         <div class="card mb-3">
             <div class="card-header bg-light d-flex align-items-center" style="cursor: pointer;" data-toggle="collapse" data-target="#detallesContent">
                 <i class="fas fa-chevron-down mr-2 panel-icon" style="transition: transform 0.3s;"></i>
-                <i class="fas fa-info-circle text-primary mr-2"></i>
-                <h5 class="mb-0">Detalles del Proceso</h5>
+                <h5 class="mb-0">Detalles</h5>
             </div>
             <div class="collapse" id="detallesContent">
                 <div class="card-body">
@@ -51,15 +50,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <label class="text-muted small d-block mb-1">Unidad Responsable</label>
-                            <p class="mb-0"><?php echo e($proceso->unidadResponsable->descripcion ?? '-'); ?></p>
-                        </div>
-                        <div class="col-md-4 mb-3 mb-md-0">
-                            <label class="text-muted small d-block mb-1">Responsable</label>
-                            <p class="mb-0"><?php echo e($proceso->responsable ? $proceso->responsable->nombres . ' ' . $proceso->responsable->apellido : '-'); ?></p>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="text-muted small d-block mb-1">En revisión</label>
                             <?php echo $proceso->requiere_revision ? '<span class="badge badge-danger">Sí</span>' : '<span class="badge badge-success">No</span>'; ?>
 
@@ -89,16 +80,53 @@
             </div>
         </div>
 
-        <!-- PANEL 2: DOCUMENTOS -->
+        <!-- PANEL 2: UNIDADES PARTICIPANTES -->
+        <div class="card mb-3">
+            <div class="card-header bg-light d-flex align-items-center justify-content-between" style="cursor: pointer;" data-toggle="collapse" data-target="#unidadesContent">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-chevron-down mr-2 panel-icon" style="transition: transform 0.3s;"></i>
+                    <h5 class="mb-0">Unidades Participantes <span class="badge badge-info ml-2"><?php echo e($proceso->unidadesResponsables->count()); ?></span></h5>
+                </div>
+                <div class="panel-actions ml-auto">
+                    <button class="btn btn-primary-pro btn-sm" onclick="abrirModalVincularUnidad(event)"><i class="fas fa-plus"></i> Agregar unidad</button>
+                </div>
+            </div>
+            <div class="collapse" id="unidadesContent">
+                <div class="card-body p-0">
+                    <?php if($proceso->unidadesResponsables->count() > 0): ?>
+                        <div class="table-responsive">
+                            <table class="table-crud w-100">
+                                <thead><tr><th style="width:80%;">Descripción</th><th style="width:20%;"></th></tr></thead>
+                                <tbody>
+                                    <?php $__currentLoopData = $proceso->unidadesResponsables; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unidad): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr>
+                                            <td><span class="text-white"><?php echo e($unidad->descripcion); ?></span></td>
+                                            <td><div class="action-buttons d-flex justify-content-end">
+                                                <button class="btn-action btn-delete" onclick="confirmDeleteUnidad('<?php echo e($proceso->id); ?>', '<?php echo e($unidad->id); ?>', '<?php echo e(addslashes($unidad->descripcion)); ?>')" title="Desvincu lar"><i class="fas fa-trash"></i></button>
+                                            </div></td>
+                                        </tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <div class="text-center py-5 text-muted"><i class="fas fa-sitemap" style="font-size: 2rem; opacity: 0.3;"></i><p class="mt-3">No hay unidades vinculadas</p>
+                            <button class="btn btn-primary-pro btn-sm mt-2" onclick="abrirModalVincularUnidad(event)"><i class="fas fa-plus"></i> Agregar unidad</button>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 3: DOCUMENTOS -->
         <div class="card mb-3">
             <div class="card-header bg-light d-flex align-items-center justify-content-between" style="cursor: pointer;" data-toggle="collapse" data-target="#documentosContent">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-chevron-down mr-2 panel-icon" style="transition: transform 0.3s;"></i>
-                    <i class="fas fa-file-pdf text-danger mr-2"></i>
-                    <h5 class="mb-0">Documentos Asociados <span class="badge badge-danger ml-2"><?php echo e($proceso->documentos->count()); ?></span></h5>
+                    <h5 class="mb-0">Documentos <span class="badge badge-danger ml-2"><?php echo e($proceso->documentos->count()); ?></span></h5>
                 </div>
                 <div class="panel-actions ml-auto">
-                    <button class="btn btn-primary-pro btn-sm" data-toggle="modal" data-target="#uploadDocumentoModal" onclick="event.stopPropagation();"><i class="fas fa-upload mr-1"></i>Subir</button>
+                    <button class="btn btn-primary-pro btn-sm" onclick="abrirModalSubirDocumento(event)"><i class="fas fa-plus"></i> Agregar documento</button>
                 </div>
             </div>
             <div class="collapse" id="documentosContent">
@@ -126,42 +154,36 @@
                         </div>
                     <?php else: ?>
                         <div class="text-center py-5 text-muted"><i class="fas fa-file-pdf" style="font-size: 2rem; opacity: 0.3;"></i><p class="mt-3">No hay documentos</p>
-                            <button class="btn btn-primary-pro btn-sm mt-2" data-toggle="modal" data-target="#uploadDocumentoModal"><i class="fas fa-upload mr-1"></i>Subir Documento</button>
+                            <button class="btn btn-primary-pro btn-sm mt-2" onclick="abrirModalSubirDocumento(event)"><i class="fas fa-plus"></i> Agregar documento</button>
                         </div>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 3: FLUJOS -->
-        <div class="card">
-            <div class="card-header bg-light d-flex align-items-center justify-content-between" style="cursor: pointer;" data-toggle="collapse" data-target="#flujosContent">
+        <!-- PANEL 4: STAKEHOLDERS -->
+        <div class="card mb-3">
+            <div class="card-header bg-light d-flex align-items-center justify-content-between" style="cursor: pointer;" data-toggle="collapse" data-target="#stakeholdersContent">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-chevron-down mr-2 panel-icon" style="transition: transform 0.3s;"></i>
-                    <i class="fas fa-project-diagram text-primary mr-2"></i>
-                    <h5 class="mb-0">Flujos Asociados <span class="badge badge-primary ml-2"><?php echo e($proceso->flujos->count()); ?></span></h5>
+                    <h5 class="mb-0">Stakeholders <span class="badge badge-warning ml-2"><?php echo e($proceso->tiposActores->count()); ?></span></h5>
                 </div>
                 <div class="panel-actions ml-auto">
-                    <button class="btn btn-primary-pro btn-sm" data-toggle="modal" data-target="#createFlujModal" onclick="event.stopPropagation(); setCreateModalProcessId('<?php echo e($proceso->id); ?>');"><i class="fas fa-plus mr-1"></i>Nuevo</button>
+                    <button class="btn btn-primary-pro btn-sm" onclick="abrirModalAgregarStakeholder(event)"><i class="fas fa-plus"></i> Agregar stakeholder</button>
                 </div>
             </div>
-            <div class="collapse" id="flujosContent">
+            <div class="collapse" id="stakeholdersContent">
                 <div class="card-body p-0">
-                    <?php if($proceso->flujos->count() > 0): ?>
+                    <?php if($proceso->tiposActores->count() > 0): ?>
                         <div class="table-responsive">
                             <table class="table-crud w-100">
-                                <thead><tr><th style="width:12%;">Fecha Inicio</th><th style="width:12%;">Fecha Firma</th><th style="width:38%;">Descripción</th><th style="width:13%;">Tipo</th><th style="width:10%;">Documentos</th><th style="width:15%;"></th></tr></thead>
+                                <thead><tr><th style="width:80%;">Descripción</th><th style="width:20%;"></th></tr></thead>
                                 <tbody>
-                                    <?php $__currentLoopData = $proceso->flujos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $flujo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <tr onclick="window.location.href='<?php echo e(route('internal.procesos.flujos.show', [$proceso->id, $flujo->id])); ?>'">
-                                            <td><span class="text-white"><?php echo e($flujo->fecha_inicio_analisis ? $flujo->fecha_inicio_analisis->format('d/m/Y') : '-'); ?></span></td>
-                                            <td><span class="text-white"><?php echo e($flujo->fecha_firma_version ? $flujo->fecha_firma_version->format('d/m/Y') : '-'); ?></span></td>
-                                            <td><span class="text-white"><?php echo e($flujo->descripcion); ?></span></td>
-                                            <td><span class="text-white"><?php echo e($flujo->tipoFlujo->descripcion ?? '-'); ?></span></td>
-                                            <td><span class="badge badge-primary"><?php echo e($flujo->documentos->count()); ?></span></td>
-                                            <td><div class="action-buttons d-flex justify-content-end" onclick="event.stopPropagation();">
-                                                <a href="<?php echo e(route('internal.procesos.flujos.edit', [$proceso->id, $flujo->id])); ?>" class="btn-action btn-edit" title="Editar"><i class="fas fa-pencil-alt"></i></a>
-                                                <button class="btn-action btn-delete" onclick="eliminarFlujo('<?php echo e($proceso->id); ?>', '<?php echo e($flujo->id); ?>', '<?php echo e(addslashes($flujo->descripcion)); ?>')" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                    <?php $__currentLoopData = $proceso->tiposActores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stakeholder): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr>
+                                            <td><span class="text-white"><?php echo e($stakeholder->descripcion); ?></span></td>
+                                            <td><div class="action-buttons d-flex justify-content-end">
+                                                <button class="btn-action btn-delete" onclick="confirmDeleteStakeholder('<?php echo e($proceso->id); ?>', '<?php echo e($stakeholder->id); ?>', '<?php echo e(addslashes($stakeholder->descripcion)); ?>')" title="Desvincular"><i class="fas fa-trash"></i></button>
                                             </div></td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -169,13 +191,15 @@
                             </table>
                         </div>
                     <?php else: ?>
-                        <div class="text-center py-5 text-muted"><i class="fas fa-inbox" style="font-size: 2rem;"></i><p class="mt-3">No hay flujos</p>
-                            <button class="btn btn-primary-pro btn-sm mt-2" data-toggle="modal" data-target="#createFlujModal" onclick="setCreateModalProcessId('<?php echo e($proceso->id); ?>');"><i class="fas fa-plus mr-1"></i>Crear Flujo</button>
+                        <div class="text-center py-5 text-muted"><i class="fas fa-users" style="font-size: 2rem; opacity: 0.3;"></i><p class="mt-3">No hay stakeholders vinculados</p>
+                            <button class="btn btn-primary-pro btn-sm mt-2" onclick="abrirModalAgregarStakeholder(event)"><i class="fas fa-plus"></i> Agregar stakeholder</button>
                         </div>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
+
+
     </div>
 </div>
 
@@ -227,8 +251,130 @@
     </div>
 </div>
 
-<?php echo $__env->make('internal.flujos.create', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-<?php echo $__env->make('internal.flujos.show', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<!-- MODAL: Vincular Unidad Responsable -->
+<div class="modal fade" id="vincularUnidadModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-link text-info mr-2"></i>
+                    Vincular Unidad
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form id="vincularUnidadForm">
+                <?php echo csrf_field(); ?>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Unidad Responsable *</label>
+                        <select class="form-control" id="unidad_responsable_id" name="unidad_responsable_id" required>
+                            <option value="">-- Seleccionar --</option>
+                            <?php $__currentLoopData = $unidadesResponsables; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unidad): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(!$proceso->unidadesResponsables->contains('id', $unidad->id)): ?>
+                                    <option value="<?php echo e($unidad->id); ?>"><?php echo e($unidad->descripcion); ?></option>
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary-pro">
+                        <i class="fas fa-link mr-1"></i>Vincular
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Confirmar desvinculación de unidad -->
+<div class="modal fade" id="deleteUnidadModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-danger mr-2"></i>
+                    Confirmar desvinculación
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">¿Estás seguro de que deseas desvinculár esta unidad?</p>
+                <small class="text-muted d-block mt-2" id="deleteUnidadName"></small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteUnidadBtn">
+                    <i class="fas fa-trash mr-1"></i>Desvincu lar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Agregar Stakeholder -->
+<div class="modal fade" id="agregarStakeholderModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-tie text-info mr-2"></i>
+                    Agregar Stakeholder
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form id="agregarStakeholderForm">
+                <?php echo csrf_field(); ?>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Stakeholder *</label>
+                        <select class="form-control" id="tipo_actor_id" name="tipo_actor_id" required>
+                            <option value="">-- Seleccionar --</option>
+                            <?php $__currentLoopData = $tiposActores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tipo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(!$proceso->tiposActores->contains('id', $tipo->id)): ?>
+                                    <option value="<?php echo e($tipo->id); ?>"><?php echo e($tipo->descripcion); ?></option>
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary-pro">
+                        <i class="fas fa-plus mr-1"></i>Agregar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Confirmar desvinculación de stakeholder -->
+<div class="modal fade" id="deleteStakeholderModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-danger mr-2"></i>
+                    Confirmar desvinculación
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">¿Estás seguro de que deseas desvinculár este stakeholder?</p>
+                <small class="text-muted d-block mt-2" id="deleteStakeholderName"></small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteStakeholderBtn">
+                    <i class="fas fa-trash mr-1"></i>Desvincular
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <style>
 /* Page title smaller for better balance */
@@ -350,6 +496,205 @@ document.getElementById('uploadDocumentoForm')?.addEventListener('submit', funct
     const fd = new FormData(this);
     fetch(`/internal/procesos/<?php echo e($proceso->id); ?>/documentos`, {method: 'POST', body: fd, headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, 'Accept': 'application/json'}})
         .then(r => r.json()).then(d => { if(d.success) { $('#uploadDocumentoModal').modal('hide'); setTimeout(() => location.reload(), 500); } }).catch(() => alert('Error'));
+});
+
+// Unidad Responsable functions
+function confirmDeleteUnidad(pId, uId, name) {
+    document.getElementById('deleteUnidadName').textContent = `Unidad: ${name}`;
+    window.deleteUnidadInfo = { procesId: pId, unidadId: uId };
+    $('#deleteUnidadModal').modal('show');
+}
+
+document.getElementById('confirmDeleteUnidadBtn')?.addEventListener('click', function() {
+    const { procesId, unidadId } = window.deleteUnidadInfo || {};
+    if (!procesId || !unidadId) return;
+    
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Desvinculando...';
+    
+    fetch(`/internal/procesos/${procesId}/unidades/${unidadId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        }
+    })
+    .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+    })
+    .then(d => {
+        if (d.success) {
+            $('#deleteUnidadModal').modal('hide');
+            location.reload();
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-trash mr-1"></i>Desvinculár';
+            alert('Error: ' + (d.message || 'No se pudo desvinculár la unidad'));
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-trash mr-1"></i>Desvinculár';
+        alert('Error: ' + err.message);
+    });
+});
+
+document.getElementById('vincularUnidadForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const unidadId = document.getElementById('unidad_responsable_id').value;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    
+    if (!unidadId) {
+        alert('Por favor selecciona una unidad');
+        return;
+    }
+
+    // Deshabilitar botón mientras se procesa
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Vinculando...';
+
+    fetch(`/internal/procesos/<?php echo e($proceso->id); ?>/unidades`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ unidad_responsable_id: unidadId })
+    })
+    .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+    })
+    .then(d => {
+        if (d.success) {
+            $('#vincularUnidadModal').modal('hide');
+            location.reload();
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-link mr-1"></i>Vincular';
+            alert('Error: ' + (d.message || 'No se pudo vincular la unidad'));
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-link mr-1"></i>Vincular';
+        alert('Error: ' + err.message);
+    });
+});
+</script>
+
+<!-- FUNCIONES DE MODAL ADICIONALES -->
+<script>
+function abrirModalVincularUnidad(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    $('#vincularUnidadModal').modal('show');
+}
+
+function abrirModalSubirDocumento(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    $('#uploadDocumentoModal').modal('show');
+}
+
+function abrirModalAgregarStakeholder(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    $('#agregarStakeholderModal').modal('show');
+}
+
+function confirmDeleteStakeholder(pId, sId, name) {
+    document.getElementById('deleteStakeholderName').textContent = `Stakeholder: ${name}`;
+    window.deleteStakeholderInfo = { procesId: pId, stakeholderId: sId };
+    $('#deleteStakeholderModal').modal('show');
+}
+
+document.getElementById('confirmDeleteStakeholderBtn')?.addEventListener('click', function() {
+    const { procesId, stakeholderId } = window.deleteStakeholderInfo || {};
+    if (!procesId || !stakeholderId) return;
+    
+    const btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Desvinculando...';
+    
+    fetch(`/internal/procesos/${procesId}/stakeholders/${stakeholderId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'
+        }
+    })
+    .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+    })
+    .then(d => {
+        if (d.success) {
+            $('#deleteStakeholderModal').modal('hide');
+            location.reload();
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-trash mr-1"></i>Desvincular';
+            alert('Error: ' + (d.message || 'No se pudo desvincular el stakeholder'));
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-trash mr-1"></i>Desvincular';
+        alert('Error: ' + err.message);
+    });
+});
+
+document.getElementById('agregarStakeholderForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const tipoActorId = document.getElementById('tipo_actor_id').value;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    
+    if (!tipoActorId) {
+        alert('Por favor selecciona un stakeholder');
+        return;
+    }
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Agregando...';
+
+    fetch(`/internal/procesos/<?php echo e($proceso->id); ?>/stakeholders`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ tipo_actor_id: tipoActorId })
+    })
+    .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+    })
+    .then(d => {
+        if (d.success) {
+            $('#agregarStakeholderModal').modal('hide');
+            location.reload();
+        } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-plus mr-1"></i>Agregar';
+            alert('Error: ' + (d.message || 'No se pudo agregar el stakeholder'));
+        }
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-plus mr-1"></i>Agregar';
+        alert('Error: ' + err.message);
+    });
 });
 </script>
 <?php $__env->stopSection(); ?>

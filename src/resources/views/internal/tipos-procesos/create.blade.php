@@ -56,7 +56,6 @@
                                 <option value="fa-tasks">✓ Tareas (fa-tasks)</option>
                                 <option value="fa-project-diagram">📊 Diagrama (fa-project-diagram)</option>
                                 <option value="fa-sitemap">🗂️ Estructura (fa-sitemap)</option>
-                                <option value="fa-flow-chart">📈 Flujo (fa-flow-chart)</option>
                             </optgroup>
                             <optgroup label="Operaciones">
                                 <option value="fa-industry">🏭 Industria (fa-industry)</option>

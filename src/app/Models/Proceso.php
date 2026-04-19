@@ -21,10 +21,8 @@ class Proceso extends Model
         'tipo_proceso_id',
         'estado_proceso_id',
         'criticidad_proceso_id',
-        'unidad_responsable_id',
         'codigo',
         'objetivo',
-        'responsable_proceso_id',
         'proceso_padre_id',
         'requiere_revision',
     ];
@@ -45,16 +43,6 @@ class Proceso extends Model
         return $this->belongsTo(CriticidadProceso::class, 'criticidad_proceso_id');
     }
 
-    public function unidadResponsable()
-    {
-        return $this->belongsTo(UnidadResponsable::class, 'unidad_responsable_id');
-    }
-
-    public function responsable()
-    {
-        return $this->belongsTo(Persona::class, 'responsable_proceso_id');
-    }
-
     public function procesoPadre()
     {
         return $this->belongsTo(Proceso::class, 'proceso_padre_id');
@@ -65,14 +53,29 @@ class Proceso extends Model
         return $this->hasMany(Proceso::class, 'proceso_padre_id');
     }
 
-    public function flujos()
-    {
-        return $this->hasMany(Flujo::class, 'proceso_id');
-    }
-
     public function documentos()
     {
         return $this->hasMany(ProcesoDocumento::class, 'proceso_id')->with('tipoDocumento')->orderBy('created_at', 'desc');
+    }
+
+    public function unidadesResponsables()
+    {
+        return $this->belongsToMany(
+            UnidadResponsable::class,
+            'proceso_unidad_responsable',
+            'proceso_id',
+            'unidad_responsable_id'
+        )->withTimestamps();
+    }
+
+    public function tiposActores()
+    {
+        return $this->belongsToMany(
+            TipoActor::class,
+            'proceso_tipo_actor',
+            'proceso_id',
+            'tipo_actor_id'
+        )->withTimestamps();
     }
 
     // Métodos de acceso

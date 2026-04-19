@@ -33,7 +33,6 @@ class DatabaseSeeder extends Seeder
             EstadosProcesosSeeder::class,
             CriticidadesProcesosSeeder::class,
             TiposActoresSeeder::class,
-            TiposFlujosProcesosSeeder::class,
         ]);
 
         // Create organizational structure
@@ -79,13 +78,9 @@ class DatabaseSeeder extends Seeder
     private function truncateTables(): void
     {
         $tables = [
-            'flujo_persona',
-            'flujo_rol',
-            'flujos',
             'procesos',
             'personas',
             'unidades_responsables',
-            'tipos_flujos_procesos',
             'tipos_actores',
             'criticidades_procesos',
             'estados_procesos',

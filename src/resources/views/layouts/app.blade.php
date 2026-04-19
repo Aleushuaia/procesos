@@ -66,7 +66,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-user-circle mr-2"></i>
-                    <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
+                    <span class="d-none d-md-inline">{{ auth()->user()->name ?? 'Usuario' }}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                     <a class="dropdown-item" href="#">
@@ -159,14 +159,11 @@
                                 <li class="nav-item">
                                     <a href="{{ route('internal.tipos-actores.index') }}" class="nav-link {{ request()->is('internal/tipos-actores*') ? 'active' : '' }}">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Tipos Actores</p>
+                                        <p>Stakeholders</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('internal.tipo-flujos.index') }}" class="nav-link {{ request()->is('internal/tipo-flujos*') ? 'active' : '' }}">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Tipos Flujos</p>
-                                    </a>
+
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('internal.tipos-procesos.index') }}" class="nav-link {{ request()->is('internal/tipos-procesos*') ? 'active' : '' }}">
@@ -225,7 +222,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">@yield('page_title', 'Dashboard')</h1>
+                        <h5 class="m-0">@yield('page_title', 'Dashboard')</h5>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -270,8 +267,7 @@
 <script src="{{ asset('js/adminlte.min.js') }}"></script>
 {{-- Custom JS --}}
 <script src="{{ asset('js/app.js') }}"></script>
-{{-- Flujo Manager (Gestión de flujos con validación) --}}
-<script src="{{ asset('js/flujo-manager.js') }}"></script>
+
 
 @yield('scripts')
 

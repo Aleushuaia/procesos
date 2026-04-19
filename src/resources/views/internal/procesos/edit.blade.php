@@ -113,43 +113,9 @@
                     </div>
                     
                 </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="unidad_responsable_id">Unidad Responsable <span class="text-danger">*</span></label>
-                        <select class="form-control @error('unidad_responsable_id') is-invalid @enderror" id="unidad_responsable_id" name="unidad_responsable_id" required>
-                            <option value="">-- Seleccionar --</option>
-                            @foreach($unidadesResponsables as $unidad)
-                                <option value="{{ $unidad->id }}" {{ old('unidad_responsable_id', $proceso->unidad_responsable_id) == $unidad->id ? 'selected' : '' }}>
-                                    {{ $unidad->descripcion }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('unidad_responsable_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="responsable_proceso_id">Responsable del Proceso</label>
-                        <select class="form-control @error('responsable_proceso_id') is-invalid @enderror" id="responsable_proceso_id" name="responsable_proceso_id">
-                            <option value="">-- Sin asignar --</option>
-                            @foreach($personas as $persona)
-                                <option value="{{ $persona->id }}" {{ old('responsable_proceso_id', $proceso->responsable_proceso_id) == $persona->id ? 'selected' : '' }}>
-                                    {{ $persona->nombres }} {{ $persona->apellido }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('responsable_proceso_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="proceso_padre_id">Proceso Padre (si aplica)</label>

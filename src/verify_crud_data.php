@@ -12,8 +12,7 @@ use App\Models\Persona;
 
 echo "=== VERIFICACIÓN DE DATOS PARA CRUD ===\n\n";
 
-// Procesos con relaciones
-$procesos = Proceso::with('tipoProceso', 'estadoProceso', 'criticidadProceso', 'unidadResponsable', 'flujos')->limit(3)->get();
+$procesos = Proceso::with('tipoProceso', 'estadoProceso', 'criticidadProceso', 'flujos')->limit(3)->get();
 echo "✓ Procesos cargables: " . $procesos->count() . " de " . Proceso::count() . "\n";
 foreach ($procesos as $p) {
     echo "  - {$p->codigo}: {$p->descripcion} (Estado: {$p->estadoProceso?->descripcion}, Flujos: {$p->flujos->count()})\n";

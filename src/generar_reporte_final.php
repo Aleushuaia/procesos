@@ -35,7 +35,6 @@ $categories = [
     'estados' => 'ESTADOS',
     'personas' => 'PERSONAS',
     'tipos-actores' => 'TIPOS ACTORES',
-    'tipo-flujos' => 'TIPOS FLUJOS',
     'tipos-procesos' => 'TIPOS PROCESOS',
     'unidades-responsables' => 'UNIDADES RESPONSABLES',
     'access-control' => 'GESTIÓN DE ACCESO',
@@ -79,7 +78,6 @@ $sidebarItems = [
     'Estados de proceso' => 'internal.estados.index',
     'Personas' => 'internal.personas.index',
     'Tipos Actores' => 'internal.tipos-actores.index',
-    'Tipos Flujos' => 'internal.tipo-flujos.index',
     'Tipos Procesos' => 'internal.tipos-procesos.index',
     'Unidades Responsables' => 'internal.unidades-responsables.index',
     'Gestión de acceso' => 'settings.access-control.index',
@@ -126,23 +124,19 @@ echo "┌─ 💾 DATA DISPONIBLE PARA TESTING\n";
 echo "│\n";
 
 $procesos = \App\Models\Proceso::count();
-$flujos = \App\Models\Flujo::count();
 $personas = \App\Models\Persona::count();
 $criticidades = \App\Models\CriticidadProceso::count();
 $estados = \App\Models\EstadoProceso::count();
 $tiposProcesos = \App\Models\TipoProceso::count();
 $tiposActores = \App\Models\TipoActor::count();
-$tiposFlujos = \App\Models\TipoFlujo::count();
 $unidades = \App\Models\UnidadResponsable::count();
 
 echo "│  Procesos:          {$procesos} registros ✅\n";
-echo "│  Flujos:            {$flujos} registros ✅\n";
 echo "│  Personas:          {$personas} registros ✅\n";
 echo "│  Criticidades:      {$criticidades} registros ✅\n";
 echo "│  Estados:           {$estados} registros ✅\n";
 echo "│  Tipos Procesos:    {$tiposProcesos} registros ✅\n";
 echo "│  Tipos Actores:     {$tiposActores} registros ✅\n";
-echo "│  Tipos Flujos:      {$tiposFlujos} registros ✅\n";
 echo "│  Unidades:          {$unidades} registros ✅\n";
 echo "│\n";
 echo "└─────────────────────────────────────────────────────────────────────────────\n\n";

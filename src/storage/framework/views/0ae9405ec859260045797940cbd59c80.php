@@ -220,73 +220,9 @@ unset($__errorArgs, $__bag); ?>
                     </div>
                     <div id="criticidadPreview" style="display: none; padding: 10px; border-radius: 4px; color: white; margin-top: 8px; font-weight: 500; text-align: center;"><i class="fas fa-exclamation-triangle mr-2"></i><span id="criticidadPreviewText"></span></div>
                 </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="unidad_responsable_id">Unidad Responsable <span class="text-danger">*</span></label>
-                        <select class="form-control <?php $__errorArgs = ['unidad_responsable_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" id="unidad_responsable_id" name="unidad_responsable_id" required>
-                            <option value="">-- Seleccionar --</option>
-                            <?php $__currentLoopData = $unidadesResponsables; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unidad): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($unidad->id); ?>" <?php echo e(old('unidad_responsable_id') == $unidad->id ? 'selected' : ''); ?>>
-                                    <?php echo e($unidad->descripcion); ?>
-
-                                </option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </select>
-                        <?php $__errorArgs = ['unidad_responsable_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                            <div class="invalid-feedback"><?php echo e($message); ?></div>
-                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                    </div>
-                </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="responsable_proceso_id">Responsable del Proceso</label>
-                        <select class="form-control <?php $__errorArgs = ['responsable_proceso_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" id="responsable_proceso_id" name="responsable_proceso_id">
-                            <option value="">-- Sin asignar --</option>
-                            <?php $__currentLoopData = $personas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $persona): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($persona->id); ?>" <?php echo e(old('responsable_proceso_id') == $persona->id ? 'selected' : ''); ?>>
-                                    <?php echo e($persona->nombres); ?> <?php echo e($persona->apellido); ?>
-
-                                </option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </select>
-                        <?php $__errorArgs = ['responsable_proceso_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                            <div class="invalid-feedback"><?php echo e($message); ?></div>
-                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                    </div>
-                </div>
-
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="proceso_padre_id">Proceso Padre (si aplica)</label>

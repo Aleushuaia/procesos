@@ -1,15 +1,15 @@
 @extends('layouts.app')
-@section('title', 'Tipos de Actores')
-@section('page_title', 'Gestión de Tipos de Actores')
-@section('breadcrumb')<li class="breadcrumb-item active">Configuraciones</li><li class="breadcrumb-item active">Tipos de Actores</li>@endsection
+@section('title', 'Stakeholders')
+@section('page_title', 'Gestión de Stakeholders')
+@section('breadcrumb')<li class="breadcrumb-item active">Configuraciones</li><li class="breadcrumb-item active">Stakeholders</li>@endsection
 @section('content')
 <div class="row">
-    <div class="col-lg-7 col-md-9 col-12">
+    <div class="col-lg-10 col-md-12 col-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0"><i class="fas fa-user-tag mr-2"></i>Tipos de Actores</h5>
-                <a href="{{ route('internal.tipos-actores.create') }}" class="btn btn-secondary btn-sm">
-                    <i class="fas fa-plus mr-1"></i> Nuevo Tipo de Actor
+                <h6 class="card-title mb-0"><i class="fas fa-user-tag mr-2"></i>Tipos de Stakeholders</h6>
+                <a href="{{ route('internal.tipos-actores.create') }}" class="btn btn-secondary btn-sm ml-auto">
+                    <i class="fas fa-plus mr-1"></i> Nuevo Stakeholder
                 </a>
             </div>
             <div class="card-body p-0">
@@ -18,6 +18,7 @@
                         <thead>
                             <tr>
                                 <th>Descripción</th>
+                                <th>Observaciones</th>
                                 <th style="width: 120px;">Acciones</th>
                             </tr>
                         </thead>
@@ -25,6 +26,7 @@
                             @foreach($tiposActores as $item)
                                 <tr onclick="window.location.href='{{ route('internal.tipos-actores.show', $item->id) }}'" style="cursor: pointer;">
                                     <td><strong>{{ $item->descripcion }}</strong></td>
+                                    <td><span class="text-muted">{{ $item->observaciones ? substr($item->observaciones, 0, 50) . (strlen($item->observaciones) > 50 ? '...' : '') : '-' }}</span></td>
                                     <td onclick="event.stopPropagation();">
                                         <div class="action-buttons">
                                             <a href="{{ route('internal.tipos-actores.show', $item->id) }}" class="btn-action btn-show" title="Ver"><i class="fas fa-eye"></i></a>
@@ -39,7 +41,7 @@
                 @else
                     <div class="empty-state text-center py-4">
                         <i class="fas fa-inbox" style="font-size: 2rem; opacity: 0.3;"></i>
-                        <p class="mt-3 text-muted">No hay tipos de actores registrados</p>
+                        <p class="mt-3 text-muted">No hay stakeholders registrados</p>
                         <a href="{{ route('internal.tipos-actores.create') }}" class="btn btn-secondary btn-sm mt-2"><i class="fas fa-plus mr-1"></i> Crear primero</a>
                     </div>
                 @endif

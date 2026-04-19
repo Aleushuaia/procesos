@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\CriticidadProceso;
 use App\Models\EstadoProceso;
-use App\Models\TipoFlujo;
 use App\Models\TipoProceso;
 use App\Models\TipoActor;
 use App\Models\UnidadResponsable;
@@ -27,12 +26,6 @@ class ProcessConfigSeeder extends Seeder
         EstadoProceso::create(['id' => (string) Str::uuid(), 'descripcion' => 'Activo']);
         EstadoProceso::create(['id' => (string) Str::uuid(), 'descripcion' => 'Revisión']);
         EstadoProceso::create(['id' => (string) Str::uuid(), 'descripcion' => 'Inactivo']);
-
-        // Crear Tipos de Flujos
-        TipoFlujo::create(['id' => (string) Str::uuid(), 'descripcion' => 'Secuencial']);
-        TipoFlujo::create(['id' => (string) Str::uuid(), 'descripcion' => 'Paralelo']);
-        TipoFlujo::create(['id' => (string) Str::uuid(), 'descripcion' => 'Condicional']);
-        TipoFlujo::create(['id' => (string) Str::uuid(), 'descripcion' => 'Iterativo']);
 
         // Crear Tipos de Procesos
         TipoProceso::create(['id' => (string) Str::uuid(), 'descripcion' => 'Operativo']);

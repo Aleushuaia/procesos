@@ -58,7 +58,6 @@
                                 <option value="fa-tasks" {{ old('icono', $tipoProceso->icono) == 'fa-tasks' ? 'selected' : '' }}>✓ Tareas</option>
                                 <option value="fa-project-diagram" {{ old('icono', $tipoProceso->icono) == 'fa-project-diagram' ? 'selected' : '' }}>📊 Diagrama</option>
                                 <option value="fa-sitemap" {{ old('icono', $tipoProceso->icono) == 'fa-sitemap' ? 'selected' : '' }}>🗂️ Estructura</option>
-                                <option value="fa-flow-chart" {{ old('icono', $tipoProceso->icono) == 'fa-flow-chart' ? 'selected' : '' }}>📈 Flujo</option>
                             </optgroup>
                             <optgroup label="Operaciones">
                                 <option value="fa-industry" {{ old('icono', $tipoProceso->icono) == 'fa-industry' ? 'selected' : '' }}>🏭 Industria</option>
